@@ -44,14 +44,14 @@ function Index() {
                 <MessageCircle size={16} /> Order on WhatsApp
               </a>
             </div>
-            <div className="mt-7 flex items-center divide-x divide-foreground/10">
-              <div className="pr-4 sm:pr-8">
+            <div className="mt-8 flex w-full items-center justify-between divide-x divide-foreground/10 sm:w-auto sm:justify-start">
+              <div className="flex-1 pr-2 sm:flex-none sm:pr-8">
                 <Stat value="4.9" label="avg rating" icon={<Star size={13} fill="currentColor" aria-hidden="true" />} />
               </div>
-              <div className="px-4 sm:px-8">
+              <div className="flex-1 px-2 sm:flex-none sm:px-8">
                 <Stat value="12k+" label="tiffins served" />
               </div>
-              <div className="pl-4 sm:pl-8">
+              <div className="flex-1 pl-2 sm:flex-none sm:pl-8">
                 <Stat value="Daily" label="fresh delivery" />
               </div>
             </div>
@@ -192,7 +192,12 @@ function Index() {
 }
 
 function Stat({ value, label, icon }: { value: string; label: string; icon?: React.ReactNode }) {
-  return <div><p className="flex items-center gap-1 font-display text-xl sm:text-2xl font-bold">{icon}{value}</p><p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p></div>;
+  return (
+    <div className="flex flex-col items-center sm:items-start">
+      <p className="flex items-center gap-1 font-display text-xl sm:text-2xl font-bold">{icon}{value}</p>
+      <p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p>
+    </div>
+  );
 }
 
 function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
