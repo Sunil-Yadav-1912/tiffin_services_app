@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [selectedPlan, setSelectedPlan] = useState<Tiffin | null>(null);
-  
+
   // Show only featured or first few tiffins on homepage
   const featuredTiffins = tiffins.slice(0, 3);
 
@@ -44,12 +44,16 @@ function Index() {
                 <MessageCircle size={16} /> Order on WhatsApp
               </a>
             </div>
-            <div className="mt-7 flex gap-5 sm:gap-8">
-              <Stat value="4.9" label="avg rating" icon={<Star size={13} fill="currentColor" aria-hidden="true" />} />
-              <span className="w-px bg-foreground/10" />
-              <Stat value="12k+" label="tiffins served" />
-              <span className="w-px bg-foreground/10" />
-              <Stat value="Daily" label="fresh delivery" />
+            <div className="mt-7 flex items-center divide-x divide-foreground/10">
+              <div className="pr-4 sm:pr-8">
+                <Stat value="4.9" label="avg rating" icon={<Star size={13} fill="currentColor" aria-hidden="true" />} />
+              </div>
+              <div className="px-4 sm:px-8">
+                <Stat value="12k+" label="tiffins served" />
+              </div>
+              <div className="pl-4 sm:pl-8">
+                <Stat value="Daily" label="fresh delivery" />
+              </div>
             </div>
           </div>
 
@@ -65,7 +69,7 @@ function Index() {
           <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Why Choose Us</h2>
           <p className="mt-2 text-sm text-muted-foreground">We promise quality in every bite.</p>
         </div>
-        
+
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <FeatureCard icon={<Leaf />} title="Fresh Every Day" desc="Prepared daily with fresh, locally sourced ingredients." />
           <FeatureCard icon={<HeartHandshake />} title="Homemade Taste" desc="Authentic recipes that remind you of home." />
@@ -188,7 +192,7 @@ function Index() {
 }
 
 function Stat({ value, label, icon }: { value: string; label: string; icon?: React.ReactNode }) {
-  return <div><p className="flex items-center gap-1 font-display text-2xl font-bold">{icon}{value}</p><p className="text-xs text-muted-foreground">{label}</p></div>;
+  return <div><p className="flex items-center gap-1 font-display text-xl sm:text-2xl font-bold">{icon}{value}</p><p className="text-[10px] sm:text-xs text-muted-foreground">{label}</p></div>;
 }
 
 function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
@@ -224,7 +228,7 @@ function Testimonial({ text, name, role }: { text: string; name: string; role: s
 
 function MealCard({ plan, onView }: { plan: Tiffin; onView: () => void }) {
   const isPremium = plan.category === "Premium";
-  
+
   return (
     <article className={`${isPremium ? "glass-strong ring-1 ring-accent/30 shadow-[0_30px_60px_-25px_oklch(0.68_0.145_55_/_45%)]" : "glass-panel"} lift-card relative flex flex-col rounded-3xl p-5 sm:p-6`}>
       {isPremium && <span className="absolute -top-3 left-5 z-20 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent-foreground shadow-sm">Premium</span>}
@@ -241,7 +245,7 @@ function MealCard({ plan, onView }: { plan: Tiffin; onView: () => void }) {
         </span>
       </div>
       <p className="mt-2 text-sm leading-relaxed text-foreground/60 line-clamp-2">{plan.description}</p>
-      
+
       <div className="mt-4 border-t border-border/50 pt-4 flex items-baseline justify-between">
         <div>
           <span className="font-display text-2xl font-bold">₹{plan.price}</span>
