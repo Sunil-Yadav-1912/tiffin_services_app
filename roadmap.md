@@ -1,0 +1,3 @@
+- [x] Build Tiffin Service home/menu experience from selected Frosted Glass Kitchen direction
+- [x] Add real food imagery and functional WhatsApp ordering links
+- [x] Verify the responsive page and central browse-to-order flow

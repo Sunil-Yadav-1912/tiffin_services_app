@@ -1,0 +1,99 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-cream: var(--cream);
+  --color-whatsapp: var(--whatsapp);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.954 0.018 105);
+  --foreground: oklch(0.255 0.045 155);
+  --card: oklch(0.985 0.01 105);
+  --card-foreground: oklch(0.255 0.045 155);
+  --popover: oklch(0.985 0.01 105);
+  --popover-foreground: oklch(0.255 0.045 155);
+  --primary: oklch(0.485 0.105 155);
+  --primary-foreground: oklch(0.97 0.02 105);
+  --secondary: oklch(0.92 0.032 150);
+  --secondary-foreground: oklch(0.34 0.06 155);
+  --muted: oklch(0.92 0.022 105);
+  --muted-foreground: oklch(0.49 0.042 155);
+  --accent: oklch(0.68 0.145 55);
+  --accent-foreground: oklch(0.98 0.018 105);
+  --brand: oklch(0.51 0.105 155);
+  --brand-deep: oklch(0.35 0.075 155);
+  --cream: oklch(0.95 0.03 90);
+  --whatsapp: oklch(0.72 0.18 145);
+  --border: oklch(0.99 0.01 105 / 72%);
+  --input: oklch(0.85 0.03 105);
+  --ring: oklch(0.58 0.11 155);
+}
+
+@utility glass-panel {
+  background: oklch(1 0 0 / 55%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid oklch(1 0 0 / 68%);
+}
+
+@utility glass-strong {
+  background: oklch(1 0 0 / 72%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid oklch(1 0 0 / 78%);
+}
+
+@utility lift-card {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -24px oklch(0.255 0.045 155 / 35%);
+  }
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    min-width: 320px;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+}
