@@ -7,8 +7,9 @@ export function Footer() {
     <footer className="relative z-10 mx-auto max-w-6xl px-4 pb-24 sm:pb-10 pt-10 sm:px-6">
       <div className="glass-panel flex flex-col items-start justify-between gap-6 rounded-2xl px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-8">
         <div className="flex flex-col gap-2">
-          <Link to="/">
+          <Link to="/" className="flex items-center gap-2.5">
             <img src="/logo_without_bg.png" alt={businessInfo.name} className="h-12 w-auto object-contain rounded-lg" />
+            <span className="font-display text-xl font-bold tracking-tight text-foreground">Tiffin Service</span>
           </Link>
           <p className="text-sm mt-1 text-muted-foreground">Homemade tiffin, made with care.</p>
         </div>

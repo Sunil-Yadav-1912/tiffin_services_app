@@ -31,7 +31,7 @@ function Index() {
               <span className="size-1.5 rounded-full bg-accent" /> Fresh from a home kitchen, every morning
             </span>
             <h1 className="mt-5 max-w-xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
-              Fresh, Homemade Tiffins Delivered With <em className="text-brand-deep">Care.</em>
+              Fresh, Homemade Tiffins Delivered With Care.
             </h1>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-foreground/65">
               Delicious, hygienic and affordable homemade meals prepared fresh for your everyday needs. Order in one tap on WhatsApp.
