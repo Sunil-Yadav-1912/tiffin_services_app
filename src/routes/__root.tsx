@@ -132,9 +132,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,var(--cream),var(--background),oklch(0.93_0.035_70))] text-foreground">
         {/* Decorative blur elements for the whole app */}
-        <div aria-hidden="true" className="pointer-events-none absolute -left-32 -top-36 size-[420px] rounded-full bg-secondary/70 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-36 top-56 size-[380px] rounded-full bg-accent/15 blur-3xl" />
-        <div aria-hidden="true" className="pointer-events-none fixed bottom-[-160px] left-1/3 size-[460px] rounded-full bg-primary/10 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -left-20 -top-20 size-[250px] sm:-left-32 sm:-top-36 sm:size-[420px] rounded-full bg-secondary/40 sm:bg-secondary/70 blur-2xl sm:blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-40 size-[250px] sm:-right-36 sm:top-56 sm:size-[380px] rounded-full bg-accent/10 sm:bg-accent/15 blur-2xl sm:blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none fixed bottom-[-100px] left-1/4 size-[300px] sm:bottom-[-160px] sm:left-1/3 sm:size-[460px] rounded-full bg-primary/10 blur-2xl sm:blur-3xl" />
 
         <Header />
 
