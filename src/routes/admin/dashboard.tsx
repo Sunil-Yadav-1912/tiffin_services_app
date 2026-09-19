@@ -150,9 +150,9 @@ function AdminDashboard() {
               <thead className="text-xs text-muted-foreground uppercase bg-foreground/5 rounded-t-xl">
                 <tr>
                   <th className="px-4 py-3 font-semibold rounded-tl-xl">Customer</th>
-                  <th className="px-4 py-3 font-semibold">Address</th>
-                  <th className="px-4 py-3 font-semibold text-center">Status</th>
-                  <th className="px-4 py-3 font-semibold rounded-tr-xl text-right">Action</th>
+                  <th className="px-4 py-3 font-semibold hidden sm:table-cell">Address</th>
+                  <th className="px-2 py-3 font-semibold text-center">Status</th>
+                  <th className="px-2 py-3 font-semibold rounded-tr-xl text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -163,31 +163,31 @@ function AdminDashboard() {
                   
                   return (
                     <tr key={cust.id} className={`transition ${onLeave ? 'bg-blue-500/5' : 'hover:bg-foreground/5'}`}>
-                      <td className="px-4 py-3 font-medium flex items-center gap-2">
-                        {cust.name}
-                        {onLeave && <span className="inline-flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full"><Plane size={10} /> On Leave</span>}
+                      <td className="px-2 sm:px-4 py-3 font-medium flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                        <span>{cust.name}</span>
+                        {onLeave && <span className="inline-flex w-fit items-center gap-1 text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-100 px-1.5 sm:px-2 py-0.5 rounded-full"><Plane size={10} /> On Leave</span>}
                       </td>
-                      <td className="px-4 py-3 text-foreground/70">{cust.address || "No address"}</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className={`text-xs font-bold px-2 py-1 rounded-md ${
+                      <td className="px-4 py-3 text-foreground/70 hidden sm:table-cell">{cust.address || "No address"}</td>
+                      <td className="px-2 py-3 text-center">
+                        <span className={`text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-1 rounded-md ${
                           status === 'Delivered' ? 'bg-green-100 text-green-700' : 
                           status === 'Cancelled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
                         }`}>
                           {status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="inline-flex rounded-lg border border-border/50 bg-background overflow-hidden p-0.5">
+                      <td className="px-2 py-3 text-right">
+                        <div className="inline-flex flex-col sm:flex-row rounded-lg border border-border/50 bg-background overflow-hidden p-0.5 gap-0.5 sm:gap-0">
                           <button
                             onClick={() => handleMarkStatus(cust.id, "Delivered")}
                             disabled={onLeave}
-                            className={`px-3 py-1.5 text-xs font-bold transition rounded-md ${status === 'Delivered' ? 'bg-green-500 text-white' : 'hover:bg-foreground/10 text-foreground/70'} disabled:opacity-30 disabled:cursor-not-allowed`}
+                            className={`px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold transition rounded-md ${status === 'Delivered' ? 'bg-green-500 text-white' : 'hover:bg-foreground/10 text-foreground/70'} disabled:opacity-30 disabled:cursor-not-allowed`}
                           >
                             Delivered
                           </button>
                           <button
                             onClick={() => handleMarkStatus(cust.id, "Cancelled")}
-                            className={`px-3 py-1.5 text-xs font-bold transition rounded-md ${status === 'Cancelled' ? 'bg-red-500 text-white' : 'hover:bg-foreground/10 text-foreground/70'}`}
+                            className={`px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-bold transition rounded-md ${status === 'Cancelled' ? 'bg-red-500 text-white' : 'hover:bg-foreground/10 text-foreground/70'}`}
                           >
                             Cancelled
                           </button>
