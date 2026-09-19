@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MobileBottomBar } from "@/components/MobileBottomBar";
+import { AppProvider } from "@/context/AppContext";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -130,7 +131,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,var(--cream),var(--background),oklch(0.93_0.035_70))] text-foreground">
+      <AppProvider>
+        <div className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,var(--cream),var(--background),oklch(0.93_0.035_70))] text-foreground">
         {/* Decorative blur elements for the whole app */}
         <div aria-hidden="true" className="pointer-events-none absolute -left-20 -top-20 size-[250px] sm:-left-32 sm:-top-36 sm:size-[420px] rounded-full bg-secondary/40 sm:bg-secondary/70 blur-2xl sm:blur-3xl" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-40 size-[250px] sm:-right-36 sm:top-56 sm:size-[380px] rounded-full bg-accent/10 sm:bg-accent/15 blur-2xl sm:blur-3xl" />
@@ -146,6 +148,7 @@ function RootComponent() {
         <Footer />
         <MobileBottomBar />
       </div>
+      </AppProvider>
     </QueryClientProvider>
   );
 }

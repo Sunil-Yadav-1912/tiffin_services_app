@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { MessageCircle, Menu, X } from "lucide-react";
+import { MessageCircle, Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import { useState } from "react";
 import { getWhatsAppLink } from "@/config/business";
+import { useApp } from "@/context/AppContext";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -14,8 +15,14 @@ export function Header() {
     { to: "/tiffins", label: "Tiffins" },
     { to: "/services", label: "Services" },
     { to: "/about", label: "About" },
-    { to: "/contact", label: "Contact" },
   ];
+
+  const { currentUser, logout } = useApp();
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+  };
 
   return (
     <header className="relative z-50 mx-auto max-w-6xl px-4 pt-5 sm:px-6">
@@ -39,6 +46,34 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {/* Auth Navigation */}
+          {currentUser ? (
+            <div className="hidden sm:flex items-center gap-2">
+              <Link
+                to={currentUser.role === "Admin" ? "/admin/dashboard" : "/customer/dashboard"}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-3.5 py-2.5 text-sm font-bold text-accent-foreground shadow-lg shadow-accent/25 transition hover:brightness-105"
+              >
+                <UserIcon size={16} />
+                <span>Dashboard</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-foreground/10 px-3.5 py-2.5 text-sm font-bold text-foreground transition hover:bg-foreground/20"
+                aria-label="Logout"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="hidden sm:inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-3.5 py-2.5 text-sm font-bold text-accent-foreground shadow-lg shadow-accent/25 transition hover:brightness-105"
+            >
+              <UserIcon size={16} />
+              <span>Login</span>
+            </Link>
+          )}
+
           <a
             href={getWhatsAppLink()}
             target="_blank"
@@ -75,6 +110,31 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            {currentUser ? (
+              <>
+                <Link
+                  to={currentUser.role === "Admin" ? "/admin/dashboard" : "/customer/dashboard"}
+                  onClick={closeMenu}
+                  className="rounded-xl px-4 py-3 text-sm font-bold text-foreground/80 hover:bg-foreground/5 [&.active]:bg-brand/10 [&.active]:text-brand-deep"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-xl px-4 py-3 text-left text-sm font-bold text-red-500 hover:bg-red-50"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                onClick={closeMenu}
+                className="rounded-xl px-4 py-3 text-sm font-bold text-foreground/80 hover:bg-foreground/5 [&.active]:bg-brand/10 [&.active]:text-brand-deep"
+              >
+                Login
+              </Link>
+            )}
             <a
               href={getWhatsAppLink()}
               target="_blank"

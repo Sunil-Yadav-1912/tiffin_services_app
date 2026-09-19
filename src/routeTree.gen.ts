@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as CustomerDashboardRouteImport } from './routes/customer/dashboard'
 import { Route as TiffinsIndexRouteImport } from './routes/tiffins/index'
 import { Route as TiffinsIdRouteImport } from './routes/tiffins/$id'
 
@@ -31,9 +35,29 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerDashboardRoute = CustomerDashboardRouteImport.update({
+  id: '/customer/dashboard',
+  path: '/customer/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TiffinsIndexRoute = TiffinsIndexRouteImport.update({
@@ -51,7 +75,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
+  '/signup': typeof SignupRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/customer/dashboard': typeof CustomerDashboardRoute
   '/tiffins/$id': typeof TiffinsIdRoute
   '/tiffins/': typeof TiffinsIndexRoute
 }
@@ -59,7 +87,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
+  '/signup': typeof SignupRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/customer/dashboard': typeof CustomerDashboardRoute
   '/tiffins/$id': typeof TiffinsIdRoute
   '/tiffins': typeof TiffinsIndexRoute
 }
@@ -68,22 +100,49 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
+  '/signup': typeof SignupRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/customer/dashboard': typeof CustomerDashboardRoute
   '/tiffins/$id': typeof TiffinsIdRoute
   '/tiffins/': typeof TiffinsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/contact' | '/services' | '/tiffins/$id' | '/tiffins/'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/login'
+    | '/services'
+    | '/signup'
+    | '/admin/dashboard'
+    | '/customer/dashboard'
+    | '/tiffins/$id'
+    | '/tiffins/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/services' | '/tiffins/$id' | '/tiffins'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/login'
+    | '/services'
+    | '/signup'
+    | '/admin/dashboard'
+    | '/customer/dashboard'
+    | '/tiffins/$id'
+    | '/tiffins'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
+    | '/login'
     | '/services'
+    | '/signup'
+    | '/admin/dashboard'
+    | '/customer/dashboard'
     | '/tiffins/$id'
     | '/tiffins/'
   fileRoutesById: FileRoutesById
@@ -92,7 +151,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  LoginRoute: typeof LoginRoute
   ServicesRoute: typeof ServicesRoute
+  SignupRoute: typeof SignupRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  CustomerDashboardRoute: typeof CustomerDashboardRoute
   TiffinsIdRoute: typeof TiffinsIdRoute
   TiffinsIndexRoute: typeof TiffinsIndexRoute
 }
@@ -120,11 +183,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customer/dashboard': {
+      id: '/customer/dashboard'
+      path: '/customer/dashboard'
+      fullPath: '/customer/dashboard'
+      preLoaderRoute: typeof CustomerDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tiffins/': {
@@ -148,7 +239,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  LoginRoute: LoginRoute,
   ServicesRoute: ServicesRoute,
+  SignupRoute: SignupRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  CustomerDashboardRoute: CustomerDashboardRoute,
   TiffinsIdRoute: TiffinsIdRoute,
   TiffinsIndexRoute: TiffinsIndexRoute,
 }
