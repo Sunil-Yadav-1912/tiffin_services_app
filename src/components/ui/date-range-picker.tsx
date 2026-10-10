@@ -16,13 +16,15 @@ interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> 
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
   disabledDates?: (date: Date) => boolean;
+  minDays?: number;
 }
 
 export function DatePickerWithRange({
   className,
   date,
   setDate,
-  disabledDates
+  disabledDates,
+  minDays
 }: DatePickerWithRangeProps) {
   return (
     <div className={cn("grid gap-2", className)}>
@@ -60,6 +62,7 @@ export function DatePickerWithRange({
             onSelect={setDate}
             numberOfMonths={2}
             disabled={disabledDates}
+            min={minDays}
           />
         </PopoverContent>
       </Popover>

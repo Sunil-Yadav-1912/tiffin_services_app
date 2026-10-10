@@ -23,9 +23,9 @@ function Signup() {
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    signup({
+    await signup({
       name, email, password, phone, address
     });
     toast.success("Account created successfully!");

@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { MessageCircle, Search, FilterX } from "lucide-react";
 
-import { tiffins, DietType, Category, MealType } from "@/data/tiffins";
+import { DietType, Category, MealType, Tiffin } from "@/data/tiffins";
+import { api } from "@/api/client";
 import { getWhatsAppLink } from "@/config/business";
 
 export const Route = createFileRoute("/tiffins/")({
@@ -13,6 +14,13 @@ function TiffinsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDiet, setSelectedDiet] = useState<DietType | "All">("All");
   const [selectedMeal, setSelectedMeal] = useState<MealType | "All">("All");
+  const [tiffins, setTiffins] = useState<Tiffin[]>([]);
+
+  useEffect(() => {
+    api.getTiffins().then(data => {
+      setTiffins(data);
+    }).catch(console.error);
+  }, []);
 
   const filteredTiffins = useMemo(() => {
     return tiffins.filter((tiffin) => {
@@ -23,7 +31,7 @@ function TiffinsPage() {
 
       return matchesSearch && matchesDiet && matchesMeal;
     });
-  }, [searchQuery, selectedDiet, selectedMeal]);
+  }, [searchQuery, selectedDiet, selectedMeal, tiffins]);
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -104,13 +112,13 @@ function FilterBtn({ active, onClick, children }: { active: boolean, onClick: ()
   );
 }
 
-function TiffinCard({ tiffin }: { tiffin: typeof tiffins[0] }) {
+function TiffinCard({ tiffin }: { tiffin: Tiffin }) {
   const isPremium = tiffin.category === "Premium";
 
   return (
     <article className={`${isPremium ? "glass-strong ring-1 ring-accent/30 shadow-lg" : "glass-panel"} lift-card relative flex flex-col rounded-3xl p-5`}>
       <Link to={`/tiffins/$id`} params={{ id: tiffin.id }} className="group overflow-hidden rounded-2xl text-left relative aspect-[16/11]">
-        <img src={tiffin.image} alt={tiffin.name} width={640} height={440} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+        <img src={tiffin.image || "https://images.unsplash.com/photo-1626779836528-984bb36bb3eb?q=80&w=1024&auto=format&fit=crop"} alt={tiffin.name} width={640} height={440} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
         <div className="absolute inset-0 bg-black/10 opacity-0 transition-opacity group-hover:opacity-100" />
       </Link>
 

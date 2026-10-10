@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { MessageCircle, Check, ArrowLeft, Clock3, Utensils, Info } from "lucide-react";
+import { MessageCircle, Check, ArrowLeft, Clock3, Utensils, Info, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 
-import { tiffins } from "@/data/tiffins";
+import { Tiffin } from "@/data/tiffins";
+import { api } from "@/api/client";
 import { getWhatsAppLink } from "@/config/business";
 import { OrderEnquiryForm } from "@/components/OrderEnquiryForm";
 
@@ -12,8 +14,29 @@ export const Route = createFileRoute("/tiffins/$id")({
 function TiffinDetailPage() {
   const { id } = Route.useParams();
   const router = useRouter();
-  
-  const tiffin = tiffins.find((t) => t.id === id);
+
+  const [tiffin, setTiffin] = useState<Tiffin | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getTiffin(id).then(data => {
+      if (data && data.name) {
+        setTiffin(data);
+      }
+      setLoading(false);
+    }).catch((e) => {
+      console.error(e);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="flex min-h-[60vh] flex-col items-center justify-center px-4">
+        <Loader2 className="animate-spin text-brand" size={48} />
+      </main>
+    );
+  }
 
   if (!tiffin) {
     return (
@@ -34,7 +57,7 @@ function TiffinDetailPage() {
   return (
     <main className="pb-16 pt-6 sm:pt-10">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <button 
+        <button
           onClick={() => router.history.back()}
           className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-foreground/60 transition hover:text-foreground"
         >
@@ -45,7 +68,7 @@ function TiffinDetailPage() {
           <div className="grid md:grid-cols-2">
             {/* Image Section */}
             <div className="relative h-64 md:h-full min-h-[300px]">
-              <img src={tiffin.image} alt={tiffin.name} className="absolute inset-0 h-full w-full object-cover" />
+              <img src={tiffin.image || "https://images.unsplash.com/photo-1626779836528-984bb36bb3eb?q=80&w=1024&auto=format&fit=crop"} alt={tiffin.name} className="absolute inset-0 h-full w-full object-cover" />
               {isPremium && (
                 <span className="absolute left-6 top-6 rounded-full bg-accent px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-accent-foreground shadow-md">
                   Premium Quality
@@ -68,7 +91,7 @@ function TiffinDetailPage() {
               </div>
 
               <h1 className="font-display text-3xl font-bold sm:text-4xl">{tiffin.name}</h1>
-              
+
               <div className="mt-4 flex items-baseline gap-2 border-b border-border/50 pb-6">
                 <span className="font-display text-4xl font-bold">₹{tiffin.price}</span>
                 <span className="text-sm text-foreground/60">/ meal</span>
@@ -76,7 +99,7 @@ function TiffinDetailPage() {
 
               <div className="mt-6 flex-1">
                 <p className="text-base leading-relaxed text-foreground/80">{tiffin.longDescription}</p>
-                
+
                 <div className="mt-8">
                   <h3 className="mb-4 flex items-center gap-2 font-display text-lg font-bold">
                     <Utensils size={18} className="text-brand" /> What's Included
@@ -97,25 +120,25 @@ function TiffinDetailPage() {
                 <p className="text-sm text-foreground/70 mb-5">
                   Enter your details to check availability for your area and place an order directly with the kitchen via WhatsApp.
                 </p>
-                
-                <OrderEnquiryForm 
-                  tiffinId={tiffin.id} 
-                  tiffinName={tiffin.name} 
-                  tiffinPrice={tiffin.price} 
-                  availableMeals={tiffin.mealType} 
+
+                <OrderEnquiryForm
+                  tiffinId={tiffin.id}
+                  tiffinName={tiffin.name}
+                  tiffinPrice={tiffin.price}
+                  availableMeals={tiffin.mealType}
                 />
               </div>
             </div>
           </div>
         </div>
-        
+
         {/* Additional Info Section */}
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           <div className="glass-panel flex gap-4 rounded-3xl p-6">
             <div className="shrink-0 mt-1 text-brand"><Info size={24} /></div>
             <div>
               <h4 className="font-bold">Delivery Timings</h4>
-              <p className="mt-1 text-sm text-foreground/70">Lunch: 11:30 AM - 1:30 PM<br/>Dinner: 7:30 PM - 9:30 PM</p>
+              <p className="mt-1 text-sm text-foreground/70">Lunch: 11:30 AM - 1:30 PM<br />Dinner: 7:30 PM - 9:30 PM</p>
             </div>
           </div>
           <div className="glass-panel flex gap-4 rounded-3xl p-6">

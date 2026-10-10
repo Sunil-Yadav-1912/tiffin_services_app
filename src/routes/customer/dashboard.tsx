@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useApp } from "@/context/AppContext";
-import { tiffins } from "@/data/tiffins";
 import { useEffect, useState } from "react";
-import { Calendar, User as UserIcon, MapPin, Phone, CreditCard, Ban, CheckCircle2, Circle, Edit, Plane } from "lucide-react";
+import { Calendar, User as UserIcon, MapPin, Phone, CreditCard, Ban, CheckCircle2, Circle, Edit, Plane, Trash2 } from "lucide-react";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
@@ -14,12 +13,13 @@ export const Route = createFileRoute("/customer/dashboard")({
 });
 
 function CustomerDashboard() {
-  const { currentUser, logs, cancelTiffinForDateRange, addLeave, updateUser } = useApp();
+  const { currentUser, logs, cancelTiffinForDateRange, addLeave, updateUser, deleteLeave } = useApp();
   const navigate = useNavigate();
-  
+
   const [cancelDateRange, setCancelDateRange] = useState<DateRange | undefined>();
   const [leaveDateRange, setLeaveDateRange] = useState<DateRange | undefined>();
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [tiffins, setTiffins] = useState<any[]>([]);
 
   // Edit form state
   const [editName, setEditName] = useState("");
@@ -33,46 +33,90 @@ function CustomerDashboard() {
       setEditName(currentUser.name);
       setEditPhone(currentUser.phone || "");
       setEditAddress(currentUser.address || "");
+      import("@/api/client").then(({ api }) => {
+        api.getTiffins().then(data => setTiffins(data)).catch(console.error);
+      });
     }
   }, [currentUser, navigate]);
 
   if (!currentUser) return null;
 
-  const userLogs = logs.filter(l => l.userId === currentUser.id).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const selectedTiffin = tiffins.find(t => t.id === currentUser.selectedTiffinId);
-  const mealPrice = selectedTiffin ? selectedTiffin.price : 100;
+  const sortedLogs = [...logs].sort((a, b) => {
+    const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+    if (dateDiff !== 0) return dateDiff;
+    return new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime();
+  });
+  
+  // Deduplicate logs by date and tiffin, picking the latest modified one
+  const userLogs = Object.values(sortedLogs.reduce((acc, log) => {
+    const key = `${log.date}-${log.tiffinId}`;
+    if (!acc[key]) {
+      acc[key] = log;
+    }
+    return acc;
+  }, {} as Record<string, any>));
 
-  // Calculate bill (Delivered meals)
-  const deliveredMeals = userLogs.filter(l => l.status === "Delivered");
-  const totalBill = deliveredMeals.length * mealPrice;
+  const customerTiffins = tiffins.filter(t => (currentUser.tiffinIds || []).includes(String(t.id)));
+  const tiffinNames = customerTiffins.map(t => t.name).join(", ");
 
-  const handleCancel = (e: React.FormEvent) => {
+  // Calculate bill (Delivered meals for current month)
+  let totalBill = 0;
+  const now = new Date();
+  const currentMonthLogs = userLogs.filter(l => {
+    const d = new Date(l.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+
+  let deliveredMealsCount = 0;
+
+  customerTiffins.forEach(t => {
+    const tiffinLogs = currentMonthLogs.filter(l => l.status === "Delivered" && String(l.tiffinId) === String(t.id));
+    deliveredMealsCount += tiffinLogs.length;
+    totalBill += tiffinLogs.length * t.price;
+  });
+
+  const advanceDeducted = Math.min(totalBill, currentUser.advancePayment || 0);
+  const payableAmount = totalBill - advanceDeducted;
+
+  const deliveredMeals = currentMonthLogs.filter(l => l.status === "Delivered");
+
+  const handleCancel = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cancelDateRange?.from && cancelDateRange?.to) {
+      const days = Math.ceil((cancelDateRange.to.getTime() - cancelDateRange.from.getTime()) / (1000 * 3600 * 24)) + 1;
+      if (days < 4) {
+        toast.error("Please select a minimum of 4 days.");
+        return;
+      }
       const from = format(cancelDateRange.from, "yyyy-MM-dd");
       const to = format(cancelDateRange.to, "yyyy-MM-dd");
-      cancelTiffinForDateRange(from, to);
+      await cancelTiffinForDateRange(from, to);
       setCancelDateRange(undefined);
     } else {
       toast.error("Please select a valid date range to cancel.");
     }
   };
 
-  const handleLeave = (e: React.FormEvent) => {
+  const handleLeave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (leaveDateRange?.from && leaveDateRange?.to) {
+      const days = Math.ceil((leaveDateRange.to.getTime() - leaveDateRange.from.getTime()) / (1000 * 3600 * 24)) + 1;
+      if (days < 4) {
+        toast.error("Please select a minimum of 4 days.");
+        return;
+      }
       const from = format(leaveDateRange.from, "yyyy-MM-dd");
       const to = format(leaveDateRange.to, "yyyy-MM-dd");
-      addLeave(from, to);
+      await addLeave(from, to);
       setLeaveDateRange(undefined);
     } else {
       toast.error("Please select a valid date range for leave.");
     }
   };
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser(currentUser.id, {
+    await updateUser(currentUser.id, {
       name: editName,
       phone: editPhone,
       address: editAddress
@@ -140,7 +184,7 @@ function CustomerDashboard() {
               </DialogContent>
             </Dialog>
           </div>
-          
+
           <div className="space-y-4 text-sm text-foreground/80 flex-1">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Name</p>
@@ -164,7 +208,7 @@ function CustomerDashboard() {
             )}
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Current Plan</p>
-              <p className="font-medium text-brand-deep">{selectedTiffin?.name || "None Selected"}</p>
+              <p className="font-medium text-brand-deep">{tiffinNames || "None Selected"}</p>
             </div>
           </div>
         </div>
@@ -178,16 +222,20 @@ function CustomerDashboard() {
             </h2>
             <div className="bg-foreground/5 rounded-2xl p-4 border border-border/50">
               <div className="flex justify-between items-center text-sm mb-2">
-                <span className="text-foreground/70">Meals Delivered:</span>
-                <span className="font-bold">{deliveredMeals.length}</span>
+                <span className="text-foreground/70">Meals Delivered (This Month):</span>
+                <span className="font-bold">{deliveredMealsCount}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm mb-2">
+                <span className="text-foreground/70">Advance Payment:</span>
+                <span className="font-bold text-green-600">-₹{advanceDeducted}</span>
               </div>
               <div className="flex justify-between items-center text-sm mb-4">
-                <span className="text-foreground/70">Price per meal:</span>
-                <span className="font-bold">₹{mealPrice}</span>
+                <span className="text-foreground/70">Total Tiffins:</span>
+                <span className="font-bold">{customerTiffins.length}</span>
               </div>
               <div className="pt-3 border-t border-border/50 flex justify-between items-end">
                 <span className="font-bold text-foreground">Total Due:</span>
-                <span className="font-display text-3xl font-bold text-brand-deep">₹{totalBill}</span>
+                <span className="font-display text-3xl font-bold text-brand-deep">₹{payableAmount}</span>
               </div>
             </div>
           </div>
@@ -195,18 +243,19 @@ function CustomerDashboard() {
           {/* Action Tabs */}
           <div className="glass-panel rounded-3xl p-6 shadow-sm flex-1">
             <h3 className="font-display text-lg font-bold mb-4 flex items-center gap-2">
-               <Ban size={18} className="text-brand-deep" /> Adjust Plan
+              <Ban size={18} className="text-brand-deep" /> Adjust Plan
             </h3>
-            
+
             <div className="space-y-6">
               {/* Cancel Range */}
               <div>
-                <p className="text-xs font-semibold mb-2 text-foreground/80">Cancel Tiffins (Range)</p>
+                <p className="text-xs font-semibold mb-2 text-foreground/80">Cancel Tiffins (Min 4 days Range)</p>
                 <form onSubmit={handleCancel} className="space-y-2">
-                  <DatePickerWithRange 
-                    date={cancelDateRange} 
-                    setDate={setCancelDateRange} 
+                  <DatePickerWithRange
+                    date={cancelDateRange}
+                    setDate={setCancelDateRange}
                     disabledDates={disablePastDates}
+                    minDays={4}
                   />
                   <button type="submit" className="w-full rounded-xl bg-foreground/10 px-4 py-2 text-sm font-bold transition hover:bg-foreground/20">
                     Cancel Dates
@@ -216,7 +265,8 @@ function CustomerDashboard() {
 
               <div className="h-px bg-border/50 w-full" />
 
-              {/* Leave Range */}
+              {/* Leave Range (Commented out as requested, since Cancel Tiffins does the same) */}
+              {/* 
               <div>
                 <p className="text-xs font-semibold mb-2 text-foreground/80">Mark On Leave</p>
                 <form onSubmit={handleLeave} className="space-y-2">
@@ -229,7 +279,8 @@ function CustomerDashboard() {
                     <Plane size={16} /> Submit Leave
                   </button>
                 </form>
-              </div>
+              </div> 
+              */}
             </div>
           </div>
         </div>
@@ -245,8 +296,17 @@ function CustomerDashboard() {
               <div className="mb-4 space-y-2">
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Active Leaves</p>
                 {currentUser.leaves.map(leave => (
-                  <div key={leave.id} className="flex items-center gap-2 bg-blue-500/10 text-blue-700 text-xs px-3 py-2 rounded-lg font-medium border border-blue-500/20">
-                    <Plane size={14} /> {format(new Date(leave.from), "MMM d")} - {format(new Date(leave.to), "MMM d")}
+                  <div key={leave.id} className="flex items-center justify-between bg-blue-500/10 text-blue-700 text-xs px-3 py-2 rounded-lg font-medium border border-blue-500/20">
+                    <span className="flex items-center gap-2">
+                      <Plane size={14} /> {format(new Date(leave.from), "MMM d")} - {format(new Date(leave.to), "MMM d")}
+                    </span>
+                    <button 
+                      onClick={() => deleteLeave(leave.id)}
+                      className="text-blue-500/50 hover:text-red-500 transition-colors p-1"
+                      title="Delete Cancellation Request"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -260,7 +320,9 @@ function CustomerDashboard() {
                 <div key={log.id} className="flex items-center justify-between p-3 rounded-xl bg-foreground/5 hover:bg-foreground/10 transition border border-border/50">
                   <div>
                     <p className="text-sm font-semibold">{log.date}</p>
-                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide">{log.status}</p>
+                    <p className="text-[11px] text-muted-foreground uppercase tracking-wide">
+                      {tiffins.find(t => String(t.id) === String(log.tiffinId))?.name || `Tiffin ${log.tiffinId}`} - {log.status}
+                    </p>
                   </div>
                   {getStatusIcon(log.status)}
                 </div>

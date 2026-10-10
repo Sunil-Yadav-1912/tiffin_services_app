@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, Clock3, MessageCircle, Star, X, Leaf, ShieldCheck, HeartHandshake, Utensils } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import heroImage from "@/assets/tiffin-hero.jpg";
-import { tiffins, Tiffin } from "@/data/tiffins";
+import { Tiffin } from "@/data/tiffins";
+import { api } from "@/api/client";
 import { getWhatsAppLink } from "@/config/business";
 import {
   Accordion,
@@ -18,6 +19,13 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [selectedPlan, setSelectedPlan] = useState<Tiffin | null>(null);
+  const [tiffins, setTiffins] = useState<Tiffin[]>([]);
+
+  useEffect(() => {
+    api.getTiffins().then(data => {
+      setTiffins(data);
+    }).catch(console.error);
+  }, []);
 
   // Show only featured or first few tiffins on homepage
   const featuredTiffins = tiffins.slice(0, 3);
@@ -238,7 +246,7 @@ function MealCard({ plan, onView }: { plan: Tiffin; onView: () => void }) {
     <article className={`${isPremium ? "glass-strong ring-1 ring-accent/30 shadow-[0_30px_60px_-25px_oklch(0.68_0.145_55_/_45%)]" : "glass-panel"} lift-card relative flex flex-col rounded-3xl p-5 sm:p-6`}>
       {isPremium && <span className="absolute -top-3 left-5 z-20 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent-foreground shadow-sm">Premium</span>}
       <Link to={`/tiffins/$id`} params={{ id: plan.id }} className="group overflow-hidden rounded-2xl text-left relative" aria-label={`View details for ${plan.name}`}>
-        <img src={plan.image} alt={plan.name} width={1024} height={640} loading="lazy" className="aspect-[16/10] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+        <img src={plan.image || "https://images.unsplash.com/photo-1626779836528-984bb36bb3eb?q=80&w=1024&auto=format&fit=crop"} alt={plan.name} width={1024} height={640} loading="lazy" className="aspect-[16/10] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
         <div className="absolute inset-0 bg-black/10 opacity-0 transition-opacity group-hover:opacity-100" />
       </Link>
       <div className="mt-5 flex items-center justify-between gap-3">
@@ -284,7 +292,7 @@ function PlanDialog({ plan, onClose }: { plan: Tiffin; onClose: () => void }) {
             <X size={18} />
           </button>
         </div>
-        <img src={plan.image} alt={plan.name} width={1024} height={640} className="mt-5 aspect-[16/9] w-full rounded-2xl object-cover" />
+        <img src={plan.image || "https://images.unsplash.com/photo-1626779836528-984bb36bb3eb?q=80&w=1024&auto=format&fit=crop"} alt={plan.name} width={1024} height={640} className="mt-5 aspect-[16/9] w-full rounded-2xl object-cover" />
         <p className="mt-5 text-sm leading-relaxed text-foreground/65">{plan.longDescription}</p>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           {plan.itemsIncluded.map((detail) => (
