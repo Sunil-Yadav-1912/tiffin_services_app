@@ -22,7 +22,7 @@ export const Route = createFileRoute("/terms")({
   component: TermsPage,
 });
 
-export function TermsPage() {
+function TermsPage() {
   const termsList = [
     {
       number: "1",

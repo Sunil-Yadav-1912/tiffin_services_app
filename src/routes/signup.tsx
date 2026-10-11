@@ -41,7 +41,7 @@ function Signup() {
             </Link>
             <h1 className="font-display text-3xl font-bold tracking-tight">Create Account</h1>
             <p className="mt-2 text-sm text-foreground/70">
-              Start your daily tiffin journey with Matka
+              Start your daily meal journey with Crownora Group
             </p>
           </div>
 

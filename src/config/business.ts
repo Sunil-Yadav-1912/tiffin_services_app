@@ -1,5 +1,5 @@
 export const businessInfo = {
-  name: "Matka Tiffin Service",
+  name: "Crownora Group",
   whatsapp: "919028027397",
   phone: "+91 9028027397",
   email: "yadavsunilkumar998@gmail.com",

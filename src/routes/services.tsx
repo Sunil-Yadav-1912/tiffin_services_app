@@ -39,7 +39,7 @@ function ServicesPage() {
         <div className="mt-16 glass-strong rounded-3xl p-8 text-center sm:p-12 shadow-lg">
           <h2 className="font-display text-3xl font-semibold">Looking for something custom?</h2>
           <p className="mt-3 text-foreground/70 max-w-lg mx-auto">We understand everyone has different dietary needs. Contact us directly and we'll see if we can accommodate your specific requirements.</p>
-          <a href={getWhatsAppLink("Hi Matka! I have a custom requirement for tiffins.")} target="_blank" rel="noreferrer" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-brand-deep px-8 py-3 font-bold text-primary-foreground hover:bg-brand transition">
+          <a href={getWhatsAppLink("Hi Crownora Group! I have a custom requirement for meals.")} target="_blank" rel="noreferrer" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-brand-deep px-8 py-3 font-bold text-primary-foreground hover:bg-brand transition">
             Chat with us
           </a>
         </div>

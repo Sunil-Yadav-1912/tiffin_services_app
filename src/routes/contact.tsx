@@ -21,9 +21,9 @@ function ContactPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const savedName = localStorage.getItem("matka_customer_name");
-    const savedPhone = localStorage.getItem("matka_customer_phone");
-    const savedEmail = localStorage.getItem("matka_customer_email");
+    const savedName = localStorage.getItem("crownora_customer_name") || localStorage.getItem("matka_customer_name");
+    const savedPhone = localStorage.getItem("crownora_customer_phone") || localStorage.getItem("matka_customer_phone");
+    const savedEmail = localStorage.getItem("crownora_customer_email") || localStorage.getItem("matka_customer_email");
     
     if (savedName) setName(savedName);
     if (savedPhone) setPhone(savedPhone);
@@ -40,9 +40,9 @@ function ContactPage() {
 
     setIsSubmitting(true);
 
-    localStorage.setItem("matka_customer_name", name.trim());
-    localStorage.setItem("matka_customer_phone", phone.trim());
-    localStorage.setItem("matka_customer_email", email.trim());
+    localStorage.setItem("crownora_customer_name", name.trim());
+    localStorage.setItem("crownora_customer_phone", phone.trim());
+    localStorage.setItem("crownora_customer_email", email.trim());
 
     await submitEnquiry({
       customerName: name.trim(),

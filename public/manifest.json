@@ -1,7 +1,7 @@
 {
-  "name": "Matka Tiffin Service",
-  "short_name": "Matka Tiffins",
-  "description": "Fresh, home-cooked Indian meal plans delivered warm across Pune.",
+  "name": "Crownora Group",
+  "short_name": "Crownora Group",
+  "description": "Hostel mess and fresh daily meal plans by Crownora Group.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

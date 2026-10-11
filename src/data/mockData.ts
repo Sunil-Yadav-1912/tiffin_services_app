@@ -28,7 +28,7 @@ export const initialUsers: User[] = [
   {
     id: "admin-1",
     name: "System Admin",
-    email: "admin@matka.com",
+    email: "admin@crownoragroup.co.in",
     password: "password123",
     role: "Admin",
   },

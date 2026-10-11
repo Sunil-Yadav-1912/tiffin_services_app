@@ -1,6 +1,6 @@
-# Matka Tiffin Service - Frontend App
+# Crownora Group - Hostel Mess & Tiffin Service App
 
-This is a premium, static-first React/Vite application for a Tiffin Service. It acts as a complete frontend foundation that allows customers to browse tiffins and place orders directly through WhatsApp.
+This is a premium React/Vite application for Crownora Group Hostel Mess & Tiffin Service. It allows students and customers to subscribe to mess packages and place orders directly.
 
 ## Key Features
 

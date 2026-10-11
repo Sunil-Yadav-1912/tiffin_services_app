@@ -1,7 +1,7 @@
 export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
 
 const getHeaders = () => {
-  const token = localStorage.getItem("matka_token");
+  const token = localStorage.getItem("crownora_token") || localStorage.getItem("matka_token");
   return {
     "Accept": "application/json",
     "Content-Type": "application/json",

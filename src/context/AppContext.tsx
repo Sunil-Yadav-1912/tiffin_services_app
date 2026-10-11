@@ -36,22 +36,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     if (typeof window === "undefined") return null;
-    const saved = localStorage.getItem("matka_currentUser");
+    const saved = localStorage.getItem("crownora_currentUser") || localStorage.getItem("matka_currentUser");
     return saved ? JSON.parse(saved) : null;
   });
 
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem("matka_currentUser", JSON.stringify(currentUser));
+      localStorage.setItem("crownora_currentUser", JSON.stringify(currentUser));
     } else {
+      localStorage.removeItem("crownora_currentUser");
       localStorage.removeItem("matka_currentUser");
+      localStorage.removeItem("crownora_token");
       localStorage.removeItem("matka_token");
       setUsers([]);
       setLogs([]);
     }
 
     const handleUnauthorized = () => {
-      if (localStorage.getItem("matka_token")) {
+      if (localStorage.getItem("crownora_token") || localStorage.getItem("matka_token")) {
         toast.error("Session expired. Please login again.");
         logout();
       }
@@ -146,7 +148,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       const res = await api.login({ email, password: pass });
       if (res.access_token) {
-        localStorage.setItem("matka_token", res.access_token);
+        localStorage.setItem("crownora_token", res.access_token);
         const u = res.user;
         setCurrentUser({
           id: String(u.id),
@@ -165,9 +167,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    const oldToken = localStorage.getItem("matka_token");
+    const oldToken = localStorage.getItem("crownora_token") || localStorage.getItem("matka_token");
     // Clear state immediately to prevent infinite loops on 401
+    localStorage.removeItem("crownora_token");
     localStorage.removeItem("matka_token");
+    localStorage.removeItem("crownora_currentUser");
     localStorage.removeItem("matka_currentUser");
     setCurrentUser(null);
     setUsers([]);

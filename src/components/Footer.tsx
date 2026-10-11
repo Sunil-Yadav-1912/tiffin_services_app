@@ -9,7 +9,7 @@ export function Footer() {
         <div className="flex flex-col gap-2">
           <Link to="/" className="flex items-center gap-2.5">
             <img src="/logo_new.png" alt={businessInfo.name} className="h-12 w-auto object-contain rounded-lg" />
-            <span className="font-display text-xl font-bold tracking-tight text-foreground">Tiffin Service</span>
+            <span className="font-display text-xl font-bold tracking-tight text-foreground">Crownora Group</span>
           </Link>
           <p className="text-sm mt-1 text-muted-foreground">Homemade tiffin, made with care.</p>
         </div>

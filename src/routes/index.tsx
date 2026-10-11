@@ -48,7 +48,7 @@ function Index() {
               <Link to="/tiffins" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-accent-foreground shadow-lg shadow-accent/30 transition hover:brightness-105">
                 Explore Tiffins <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
-              <a href={getWhatsAppLink("Hi Matka! I would like to place an order.")} target="_blank" rel="noreferrer" className="glass-panel inline-flex min-h-12 items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-foreground/80 transition hover:text-brand-deep">
+              <a href={getWhatsAppLink("Hi Crownora Group! I would like to place an order.")} target="_blank" rel="noreferrer" className="glass-panel inline-flex min-h-12 items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-foreground/80 transition hover:text-brand-deep">
                 <MessageCircle size={16} /> Order on WhatsApp
               </a>
             </div>
@@ -438,7 +438,7 @@ function Index() {
         <div className="glass-strong rounded-3xl p-8 text-center sm:p-12 shadow-[0_20px_50px_-25px_oklch(0.255_0.045_155_/_30%)]">
           <h2 className="font-display text-3xl font-semibold tracking-tight">Ready to taste the difference?</h2>
           <p className="mt-3 text-foreground/70 max-w-lg mx-auto">Skip the junk food. Get wholesome, nutritious, and delicious meals delivered to your doorstep.</p>
-          <a href={getWhatsAppLink("Hi Matka! I want to start a tiffin plan.")} target="_blank" rel="noreferrer" className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-brand-deep px-8 py-3 text-base font-bold text-primary-foreground transition hover:bg-brand">
+          <a href={getWhatsAppLink("Hi Crownora Group! I want to start a meal plan.")} target="_blank" rel="noreferrer" className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-brand-deep px-8 py-3 text-base font-bold text-primary-foreground transition hover:bg-brand">
             <MessageCircle size={20} /> Order on WhatsApp
           </a>
         </div>
