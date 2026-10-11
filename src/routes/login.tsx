@@ -35,6 +35,9 @@ function Login() {
       <div className="w-full max-w-md">
         <div className="glass-panel lift-card rounded-3xl p-8 sm:p-10 shadow-[0_20px_50px_-25px_oklch(0.255_0.045_155_/_20%)]">
           <div className="text-center mb-8">
+            <Link to="/" className="inline-block mb-3">
+              <img src="/logo_new.png" alt="Logo" className="h-14 w-auto mx-auto object-contain rounded-xl hover:opacity-90 transition" />
+            </Link>
             <h1 className="font-display text-3xl font-bold tracking-tight">Welcome Back</h1>
             <p className="mt-2 text-sm text-foreground/70">
               Sign in to manage your tiffin orders

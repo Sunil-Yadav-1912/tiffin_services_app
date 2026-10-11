@@ -8,7 +8,7 @@ export function Footer() {
       <div className="glass-panel flex flex-col items-start justify-between gap-6 rounded-2xl px-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-8">
         <div className="flex flex-col gap-2">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src="/logo_without_bg.png" alt={businessInfo.name} className="h-12 w-auto object-contain rounded-lg" />
+            <img src="/logo_new.png" alt={businessInfo.name} className="h-12 w-auto object-contain rounded-lg" />
             <span className="font-display text-xl font-bold tracking-tight text-foreground">Tiffin Service</span>
           </Link>
           <p className="text-sm mt-1 text-muted-foreground">Homemade tiffin, made with care.</p>
@@ -19,6 +19,7 @@ export function Footer() {
           <Link to="/tiffins" className="transition-colors hover:text-brand-deep">Tiffins</Link>
           <Link to="/services" className="transition-colors hover:text-brand-deep">Services</Link>
           <Link to="/about" className="transition-colors hover:text-brand-deep">About</Link>
+          <Link to="/terms" className="transition-colors hover:text-brand-deep">Terms & Conditions</Link>
           <Link to="/contact" className="transition-colors hover:text-brand-deep">Contact</Link>
         </div>
       </div>

@@ -86,6 +86,256 @@ function Index() {
         </div>
       </section>
 
+      {/* HOSTEL MONTHLY MESS PLANS */}
+      <section id="monthly-plans" className="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div className="glass-panel lift-card rounded-3xl p-6 sm:p-10 border border-border/50 bg-gradient-to-br from-amber-500/5 via-background to-brand/5 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+              <span className="glass-panel inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold text-brand-deep shadow-sm">
+                🎓 For Hostel Students
+              </span>
+              <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+                Monthly Mess Subscriptions
+              </h2>
+              <p className="mt-2 text-sm text-foreground/70 max-w-xl">
+                Complete monthly food security with hygienic, nutritious home-style meals. Zero daily cooking hassles.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/terms"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-deep hover:underline bg-brand/5 px-3 py-2 rounded-xl"
+              >
+                <span>Mess Terms &amp; Push Button Rules</span>
+                <ArrowUpRight size={14} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Timings Strip */}
+          <div className="grid gap-3 sm:grid-cols-3 mb-8 p-4 rounded-2xl bg-foreground/5 border border-border/50">
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded-xl bg-amber-500/10 text-amber-700">
+                <Clock3 size={20} />
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground font-semibold">Breakfast</span>
+                <p className="text-sm font-extrabold text-foreground">8:30 AM – 9:30 AM</p>
+                <span className="text-[10px] text-red-600 font-semibold">Skip &lt; 12:00 AM</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded-xl bg-orange-500/10 text-orange-700">
+                <Clock3 size={20} />
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground font-semibold">Lunch</span>
+                <p className="text-sm font-extrabold text-foreground">12:00 PM – 2:00 PM</p>
+                <span className="text-[10px] text-red-600 font-semibold">Skip &lt; 10:00 AM</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded-xl bg-indigo-500/10 text-indigo-700">
+                <Clock3 size={20} />
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground font-semibold">Dinner</span>
+                <p className="text-sm font-extrabold text-foreground">8:00 PM – 9:30 PM</p>
+                <span className="text-[10px] text-red-600 font-semibold">Skip &lt; 6:00 PM</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly Plans Grid */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/* Breakfast 1200 */}
+            <div className="rounded-2xl border border-border/60 bg-background/70 p-5 flex flex-col justify-between hover:border-brand/40 transition shadow-sm">
+              <div>
+                <span className="text-[11px] font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full">
+                  Morning Only
+                </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-foreground">Breakfast</h3>
+                <p className="mt-1 text-xs text-foreground/60">Poha, Upma, Idli, Parathas &amp; Tea</p>
+                <p className="mt-1 text-xs font-semibold text-foreground/80">Timing: 8:30 – 9:30 AM</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-2xl font-extrabold text-foreground">₹1,200</span>
+                  <span className="text-xs text-muted-foreground ml-1">/ mo</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Monthly Breakfast Plan (₹1200).")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
+                >
+                  Join
+                </a>
+              </div>
+            </div>
+
+            {/* Lunch 1800 */}
+            <div className="rounded-2xl border border-border/60 bg-background/70 p-5 flex flex-col justify-between hover:border-brand/40 transition shadow-sm">
+              <div>
+                <span className="text-[11px] font-bold text-orange-600 bg-orange-500/10 px-2 py-0.5 rounded-full">
+                  Afternoon Only
+                </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-foreground">Lunch</h3>
+                <p className="mt-1 text-xs text-foreground/60">4 Phulkas, Sabzi, Dal, Rice, Salad &amp; Pickle</p>
+                <p className="mt-1 text-xs font-semibold text-foreground/80">Timing: 12:00 – 2:00 PM</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-2xl font-extrabold text-foreground">₹1,800</span>
+                  <span className="text-xs text-muted-foreground ml-1">/ mo</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Monthly Lunch Plan (₹1800).")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
+                >
+                  Join
+                </a>
+              </div>
+            </div>
+
+            {/* Dinner 2100 */}
+            <div className="rounded-2xl border border-border/60 bg-background/70 p-5 flex flex-col justify-between hover:border-brand/40 transition shadow-sm">
+              <div>
+                <span className="text-[11px] font-bold text-indigo-600 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+                  Evening Only
+                </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-foreground">Dinner</h3>
+                <p className="mt-1 text-xs text-foreground/60">4 Rotis, Special Curry, Dal, Rice &amp; Salad</p>
+                <p className="mt-1 text-xs font-semibold text-foreground/80">Timing: 8:00 – 9:30 PM</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-2xl font-extrabold text-foreground">₹2,100</span>
+                  <span className="text-xs text-muted-foreground ml-1">/ mo</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Monthly Dinner Plan (₹2100).")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
+                >
+                  Join
+                </a>
+              </div>
+            </div>
+
+            {/* Breakfast + Lunch 2800 */}
+            <div className="rounded-2xl border border-border/60 bg-background/70 p-5 flex flex-col justify-between hover:border-brand/40 transition shadow-sm">
+              <div>
+                <span className="text-[11px] font-bold text-amber-700 bg-amber-500/15 px-2 py-0.5 rounded-full">
+                  Morning + Lunch
+                </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-foreground">Breakfast + Lunch</h3>
+                <p className="mt-1 text-xs text-foreground/60">Full Breakfast + Complete Afternoon Lunch</p>
+                <p className="mt-1 text-xs font-semibold text-foreground/80">8:30 AM &amp; 12:00 PM</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-2xl font-extrabold text-foreground">₹2,800</span>
+                  <span className="text-xs text-muted-foreground ml-1">/ mo</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Breakfast + Lunch Combo (₹2800).")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
+                >
+                  Join
+                </a>
+              </div>
+            </div>
+
+            {/* Breakfast + Dinner 2800 */}
+            <div className="rounded-2xl border border-border/60 bg-background/70 p-5 flex flex-col justify-between hover:border-brand/40 transition shadow-sm">
+              <div>
+                <span className="text-[11px] font-bold text-indigo-700 bg-indigo-500/15 px-2 py-0.5 rounded-full">
+                  Morning + Dinner
+                </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-foreground">Breakfast + Dinner</h3>
+                <p className="mt-1 text-xs text-foreground/60">Hot Breakfast + Hearty Evening Dinner</p>
+                <p className="mt-1 text-xs font-semibold text-foreground/80">8:30 AM &amp; 8:00 PM</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-2xl font-extrabold text-foreground">₹2,800</span>
+                  <span className="text-xs text-muted-foreground ml-1">/ mo</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Breakfast + Dinner Combo (₹2800).")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
+                >
+                  Join
+                </a>
+              </div>
+            </div>
+
+            {/* Lunch + Dinner 3300 */}
+            <div className="rounded-2xl border-2 border-brand/40 bg-background/80 p-5 flex flex-col justify-between hover:border-brand transition shadow-md">
+              <div>
+                <span className="text-[11px] font-bold text-brand-deep bg-brand/10 px-2 py-0.5 rounded-full">
+                  Most Popular 🔥
+                </span>
+                <h3 className="mt-2 font-display text-lg font-bold text-foreground">Lunch + Dinner</h3>
+                <p className="mt-1 text-xs text-foreground/60">Daily Lunch Thali + Full Dinner Thali</p>
+                <p className="mt-1 text-xs font-semibold text-foreground/80">12:00 PM &amp; 8:00 PM</p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-2xl font-extrabold text-foreground">₹3,300</span>
+                  <span className="text-xs text-muted-foreground ml-1">/ mo</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Lunch + Dinner Combo (₹3300).")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
+                >
+                  Join
+                </a>
+              </div>
+            </div>
+
+            {/* Breakfast + Lunch + Dinner 3800 */}
+            <div className="rounded-2xl border-2 border-accent bg-accent/10 p-5 flex flex-col justify-between hover:brightness-105 transition shadow-lg sm:col-span-2 lg:col-span-2 xl:col-span-2">
+              <div>
+                <span className="text-[11px] font-bold text-accent-foreground bg-accent px-2.5 py-0.5 rounded-full">
+                  ⭐ Full Mess (Best Value)
+                </span>
+                <h3 className="mt-2 font-display text-xl font-bold text-foreground">
+                  Breakfast + Lunch + Dinner
+                </h3>
+                <p className="mt-1 text-xs text-foreground/75">
+                  Complete 3-meal subscription! Breakfast (8:30-9:30 AM), Lunch (12:00-2:00 PM), and Dinner (8:00-9:30 PM). Zero worry about hostel meals.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                <div>
+                  <span className="font-display text-3xl font-extrabold text-foreground">₹3,800</span>
+                  <span className="text-xs text-muted-foreground ml-1 font-semibold">/ month</span>
+                </div>
+                <a
+                  href={getWhatsAppLink("Hi! I want to subscribe to Full Mess Plan (Breakfast + Lunch + Dinner) for ₹3800.")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl bg-accent px-4 py-2 text-xs font-extrabold text-accent-foreground hover:brightness-110 shadow-md transition"
+                >
+                  Subscribe Full Mess
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* POPULAR TIFFINS */}
       <section id="plans" className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-8 flex items-end justify-between gap-4">
@@ -262,7 +512,9 @@ function MealCard({ plan, onView }: { plan: Tiffin; onView: () => void }) {
       <div className="mt-4 border-t border-border/50 pt-4 flex items-baseline justify-between">
         <div>
           <span className="font-display text-2xl font-bold">₹{plan.price}</span>
-          <span className="text-xs text-muted-foreground ml-1">/ meal</span>
+          <span className="text-xs text-muted-foreground ml-1">
+            {plan.category === "Monthly" || plan.name.toLowerCase().includes("monthly") || plan.name.toLowerCase().includes("combo") ? "/ month" : "/ meal"}
+          </span>
         </div>
         <span className="text-xs font-semibold text-foreground/50">{plan.mealType}</span>
       </div>

@@ -94,7 +94,9 @@ function TiffinDetailPage() {
 
               <div className="mt-4 flex items-baseline gap-2 border-b border-border/50 pb-6">
                 <span className="font-display text-4xl font-bold">₹{tiffin.price}</span>
-                <span className="text-sm text-foreground/60">/ meal</span>
+                <span className="text-sm text-foreground/60">
+                  {tiffin.category === "Monthly" || tiffin.name.toLowerCase().includes("month") ? "/ month" : "/ meal"}
+                </span>
               </div>
 
               <div className="mt-6 flex-1">
@@ -135,10 +137,19 @@ function TiffinDetailPage() {
         {/* Additional Info Section */}
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           <div className="glass-panel flex gap-4 rounded-3xl p-6">
-            <div className="shrink-0 mt-1 text-brand"><Info size={24} /></div>
+            <div className="shrink-0 mt-1 text-brand"><Clock3 size={24} /></div>
             <div>
-              <h4 className="font-bold">Delivery Timings</h4>
-              <p className="mt-1 text-sm text-foreground/70">Lunch: 11:30 AM - 1:30 PM<br />Dinner: 7:30 PM - 9:30 PM</p>
+              <h4 className="font-bold">Meal Serving Timings</h4>
+              <p className="mt-1 text-xs sm:text-sm text-foreground/70 space-y-1">
+                <div><span className="font-semibold text-foreground">Breakfast:</span> 8:30 AM – 9:30 AM</div>
+                <div><span className="font-semibold text-foreground">Lunch:</span> 12:00 PM – 2:00 PM</div>
+                <div><span className="font-semibold text-foreground">Dinner:</span> 8:00 PM – 9:30 PM</div>
+              </p>
+              <div className="mt-2">
+                <Link to="/terms" className="text-xs font-bold text-brand-deep hover:underline">
+                  View Skip Deadlines &amp; Rules →
+                </Link>
+              </div>
             </div>
           </div>
           <div className="glass-panel flex gap-4 rounded-3xl p-6">

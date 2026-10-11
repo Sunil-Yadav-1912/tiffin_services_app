@@ -15,6 +15,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as CustomerDashboardRouteImport } from './routes/customer/dashboard'
 import { Route as TiffinsIndexRouteImport } from './routes/tiffins/index'
@@ -50,6 +51,11 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/customer/dashboard': typeof CustomerDashboardRoute
   '/tiffins/$id': typeof TiffinsIdRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/customer/dashboard': typeof CustomerDashboardRoute
   '/tiffins/$id': typeof TiffinsIdRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/services': typeof ServicesRoute
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/customer/dashboard': typeof CustomerDashboardRoute
   '/tiffins/$id': typeof TiffinsIdRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/services'
     | '/signup'
+    | '/terms'
     | '/admin/dashboard'
     | '/customer/dashboard'
     | '/tiffins/$id'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/services'
     | '/signup'
+    | '/terms'
     | '/admin/dashboard'
     | '/customer/dashboard'
     | '/tiffins/$id'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/services'
     | '/signup'
+    | '/terms'
     | '/admin/dashboard'
     | '/customer/dashboard'
     | '/tiffins/$id'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ServicesRoute: typeof ServicesRoute
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   CustomerDashboardRoute: typeof CustomerDashboardRoute
   TiffinsIdRoute: typeof TiffinsIdRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/admin/dashboard'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ServicesRoute: ServicesRoute,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   CustomerDashboardRoute: CustomerDashboardRoute,
   TiffinsIdRoute: TiffinsIdRoute,

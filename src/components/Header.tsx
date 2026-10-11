@@ -28,7 +28,7 @@ export function Header() {
     <header className="relative z-50 mx-auto max-w-6xl px-4 pt-5 sm:px-6">
       <div className="glass-panel flex items-center justify-between rounded-2xl px-4 py-3 shadow-[0_10px_40px_-15px_oklch(0.255_0.045_155_/_25%)] sm:px-5">
         <Link to="/" onClick={closeMenu} className="flex items-center gap-2.5" aria-label="Matka home">
-          <img src="/logo_without_bg.png" alt="Matka Logo" className="h-11 sm:h-12 w-auto object-contain rounded-lg" />
+          <img src="/logo_new.png" alt="Matka Logo" className="h-11 sm:h-12 w-auto object-contain rounded-lg" />
           <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground">Tiffin Service</span>
         </Link>
 

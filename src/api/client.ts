@@ -197,10 +197,26 @@ export const api = {
     if (!res.ok) throw new Error("Failed to update logs");
     return res.json();
   },
-  generateBilling: async () => {
+  getAdminBills: async (monthYear?: string) => {
+    const url = monthYear ? `${BASE_URL}/admin/billing?month_year=${monthYear}` : `${BASE_URL}/admin/billing`;
+    const res = await fetchWithAuth(url, { cache: "no-store" });
+    if (!res.ok) return [];
+    return res.json();
+  },
+  updateBillStatus: async (billId: string | number, status: "Paid" | "Unpaid") => {
+    const res = await fetchWithAuth(`${BASE_URL}/admin/billing/${billId}/status`, {
+      method: "PUT",
+      headers: getHeaders(),
+      body: JSON.stringify({ status })
+    });
+    if (!res.ok) throw new Error("Failed to update bill status");
+    return res.json();
+  },
+  generateBilling: async (monthYear?: string) => {
     const res = await fetchWithAuth(`${BASE_URL}/admin/billing/generate`, {
       method: "POST",
-      headers: getHeaders()
+      headers: getHeaders(),
+      body: JSON.stringify(monthYear ? { month_year: monthYear } : {})
     });
     return res.json();
   }
