@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useApp } from "@/context/AppContext";
 import { useEffect, useState } from "react";
-import { Calendar, User as UserIcon, MapPin, Phone, CreditCard, Ban, CheckCircle2, Circle, Edit, Plane, Trash2 } from "lucide-react";
+import { Calendar, User as UserIcon, MapPin, Phone, CreditCard, Ban, CheckCircle2, Edit, Plane, Trash2 } from "lucide-react";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { UPIPaymentModal } from "@/components/UPIPaymentModal";
 
 export const Route = createFileRoute("/customer/dashboard")({
   component: CustomerDashboard,
@@ -22,6 +23,7 @@ function CustomerDashboard() {
   const [tiffins, setTiffins] = useState<any[]>([]);
   const [customerBills, setCustomerBills] = useState<any[]>([]);
   const [billingTab, setBillingTab] = useState<"current" | "past">("current");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   // Edit form state
   const [editName, setEditName] = useState("");
@@ -280,6 +282,18 @@ function CustomerDashboard() {
                   </div>
                 </div>
 
+                {payableAmount > 0 && (
+                  <button
+                    type="button"
+                    id="pay-now-btn"
+                    onClick={() => setIsPaymentModalOpen(true)}
+                    className="w-full mt-1 flex items-center justify-center gap-2 rounded-2xl bg-brand-deep px-5 py-3.5 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand active:scale-[0.98]"
+                  >
+                    <CreditCard size={16} />
+                    Pay Now ₹{payableAmount}
+                  </button>
+                )}
+
                 {customerBills.length > 0 && (
                   <button
                     type="button"
@@ -468,6 +482,14 @@ function CustomerDashboard() {
           </div>
         </div>
       </div>
+
+      {/* UPI Payment Modal */}
+      <UPIPaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        customerName={currentUser.name}
+        amount={payableAmount}
+      />
     </main>
   );
 }
