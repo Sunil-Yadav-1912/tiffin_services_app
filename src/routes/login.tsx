@@ -9,8 +9,8 @@ export const Route = createFileRoute("/login")({
 });
 
 function Login() {
-  const [email, setEmail] = useState("admin@example.com"); // Pre-filled for demo
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { login, currentUser } = useApp();
   const navigate = useNavigate();
 
@@ -95,6 +95,7 @@ function Login() {
               Sign up here
             </Link>
           </p>
+          {/* Demo Credentials (commented out for production)
           <div className="mt-6 border-t border-border/50 pt-6 text-center">
             <p className="text-xs text-muted-foreground mb-2">Demo Credentials:</p>
             <div className="flex flex-col gap-1 text-xs font-mono bg-foreground/5 p-3 rounded-lg text-left text-foreground/70">
@@ -102,6 +103,7 @@ function Login() {
               <span>Customer: john@example.com / password</span>
             </div>
           </div>
+          */}
         </div>
       </div>
     </main>
