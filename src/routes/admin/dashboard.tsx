@@ -1,12 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useApp } from "@/context/AppContext";
 import { useEffect, useState, useMemo } from "react";
-import { Users, CalendarCheck, FileText, Trash2, Edit, Plane, UserIcon, CheckCircle2, Clock, Bell, BellDot, UserPlus, Check } from "lucide-react";
+import { Users, CalendarCheck, FileText, Trash2, Edit, Plane, UserIcon, CheckCircle2, Clock, Bell, BellDot, UserPlus, Check, Volume2 } from "lucide-react";
 import { User, TiffinStatus, AppNotification } from "@/data/mockData";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format, formatDistanceToNow } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { requestNotificationPermission, getNotificationPermissionStatus, playNotificationSound } from "@/utils/notifications";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: AdminDashboard,
@@ -21,8 +22,25 @@ function AdminDashboard() {
   const [bills, setBills] = useState<any[]>([]);
   const [tiffins, setTiffins] = useState<any[]>([]);
   
-  // Notification Panel State
+  // Notification Panel & Alert State
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [notifPermission, setNotifPermission] = useState<string>("default");
+
+  useEffect(() => {
+    setNotifPermission(getNotificationPermissionStatus());
+  }, []);
+
+  const handleEnableAlerts = async () => {
+    const perm = await requestNotificationPermission();
+    setNotifPermission(perm);
+    if (perm === "granted") {
+      toast.success("Real-time sound and phone alerts are enabled!");
+    } else if (perm === "denied") {
+      toast.error("Notification permission was blocked in browser. Please enable notifications in site settings.");
+    } else {
+      toast.info("Audio chime test played.");
+    }
+  };
 
   // Admin Profile Edit State
   const [isAdminEditOpen, setIsAdminEditOpen] = useState(false);
@@ -267,38 +285,53 @@ function AdminDashboard() {
                 )}
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[480px] bg-background/95 backdrop-blur-2xl border border-border/50 shadow-2xl rounded-3xl max-h-[80vh] flex flex-col">
-              <DialogHeader className="flex-shrink-0">
-                <div className="flex items-center justify-between">
-                  <DialogTitle className="font-display text-xl font-bold flex items-center gap-2">
-                    <Bell size={18} className="text-brand-deep" /> Notification History
+            <DialogContent className="w-[94vw] sm:max-w-[480px] p-4 sm:p-6 bg-background/95 backdrop-blur-2xl border border-border/50 shadow-2xl rounded-3xl max-h-[85vh] flex flex-col">
+              <DialogHeader className="flex-shrink-0 pr-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <DialogTitle className="font-display text-lg sm:text-xl font-bold flex items-center gap-2 flex-wrap">
+                    <Bell size={18} className="text-brand-deep shrink-0" />
+                    <span>Notifications</span>
                     {unreadCount > 0 && (
-                      <span className="text-xs font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">{unreadCount} new</span>
+                      <span className="text-[11px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">{unreadCount} new</span>
                     )}
                   </DialogTitle>
                   {unreadCount > 0 && (
                     <button
                       onClick={markAllNotificationsRead}
-                      className="text-xs font-semibold text-brand-deep hover:underline flex items-center gap-1 mr-6"
+                      className="text-xs font-semibold text-brand-deep hover:underline flex items-center gap-1 w-fit"
                     >
                       <Check size={12} /> Mark all read
                     </button>
                   )}
                 </div>
               </DialogHeader>
-              <div className="flex-1 overflow-y-auto mt-4 space-y-2 pr-1">
+
+              {/* Quick device alerts toggle banner */}
+              {notifPermission !== "granted" && (
+                <div className="mt-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between gap-2">
+                  <p className="text-[11px] text-amber-800 font-medium leading-tight">Enable sound &amp; phone alerts for new signups</p>
+                  <button
+                    onClick={handleEnableAlerts}
+                    className="shrink-0 text-[11px] font-bold bg-amber-500 text-white px-2.5 py-1 rounded-lg hover:bg-amber-600 transition shadow-sm"
+                  >
+                    Enable
+                  </button>
+                </div>
+              )}
+
+              <div className="flex-1 overflow-y-auto mt-3 space-y-2 pr-1">
                 {notifications.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="flex flex-col items-center justify-center py-10 text-center">
                     <Bell size={36} className="text-foreground/20 mb-3" />
                     <p className="text-sm font-medium text-foreground/50">No notifications yet</p>
-                    <p className="text-xs text-foreground/40 mt-1">New customer signups and events will appear here.</p>
+                    <p className="text-xs text-foreground/40 mt-1">New customer signups and events will appear here in real time.</p>
                   </div>
                 ) : (
                   notifications.map(notif => (
                     <div
                       key={notif.id}
                       onClick={() => !notif.read && markNotificationRead(notif.id)}
-                      className={`flex gap-3 p-3 rounded-xl border cursor-pointer transition ${
+                      className={`flex gap-2.5 sm:gap-3 p-3 rounded-xl border cursor-pointer transition ${
                         notif.read
                           ? "bg-foreground/3 border-border/30 opacity-70"
                           : "bg-brand-deep/5 border-brand-deep/20 hover:bg-brand-deep/10"
@@ -310,24 +343,26 @@ function AdminDashboard() {
                         {notif.type === "new_customer" ? <UserPlus size={15} /> : <Bell size={15} />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <p className={`text-sm font-semibold truncate ${notif.read ? "text-foreground/60" : "text-foreground"}`}>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 sm:gap-2">
+                          <p className={`text-xs sm:text-sm font-semibold truncate ${notif.read ? "text-foreground/60" : "text-foreground"}`}>
                             {notif.title}
                           </p>
-                          {!notif.read && (
-                            <span className="shrink-0 inline-block h-2 w-2 rounded-full bg-brand-deep mt-1.5" />
-                          )}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {!notif.read && (
+                              <span className="inline-block h-2 w-2 rounded-full bg-brand-deep" />
+                            )}
+                            <span className="text-[10px] text-foreground/40 whitespace-nowrap">
+                              {(() => {
+                                try {
+                                  return formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true });
+                                } catch {
+                                  return notif.createdAt;
+                                }
+                              })()}
+                            </span>
+                          </div>
                         </div>
-                        <p className="text-xs text-foreground/60 mt-0.5 leading-snug">{notif.message}</p>
-                        <p className="text-[10px] text-foreground/40 mt-1">
-                          {(() => {
-                            try {
-                              return formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true });
-                            } catch {
-                              return notif.createdAt;
-                            }
-                          })()}
-                        </p>
+                        <p className="text-xs text-foreground/60 mt-1 leading-snug break-words">{notif.message}</p>
                       </div>
                     </div>
                   ))
@@ -753,26 +788,38 @@ function AdminDashboard() {
       </Dialog>
 
       {/* Notification History Panel */}
-      <div className="mt-8 glass-panel rounded-3xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-display text-xl font-bold flex items-center gap-2">
-            <Bell size={20} className="text-brand-deep" /> Notification History
-            {unreadCount > 0 && (
-              <span className="text-xs font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">{unreadCount} unread</span>
+      <div className="mt-8 glass-panel rounded-3xl p-4 sm:p-6 shadow-sm overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 className="font-display text-lg sm:text-xl font-bold flex items-center gap-2">
+              <Bell size={20} className="text-brand-deep shrink-0" />
+              <span>Notification History</span>
+              {unreadCount > 0 && (
+                <span className="text-xs font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">{unreadCount} unread</span>
+              )}
+            </h2>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            {notifPermission !== "granted" && (
+              <button
+                onClick={handleEnableAlerts}
+                className="text-xs font-bold text-amber-700 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-lg px-2.5 py-1.5 transition flex items-center gap-1"
+                title="Enable browser sound & push alerts"
+              >
+                🔔 Enable Alerts
+              </button>
             )}
-          </h2>
-          <div className="flex items-center gap-2">
             {unreadCount > 0 && (
               <button
                 onClick={markAllNotificationsRead}
-                className="text-xs font-semibold text-brand-deep hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-brand-deep hover:underline flex items-center gap-1 bg-brand-deep/5 px-2.5 py-1.5 rounded-lg border border-brand-deep/20"
               >
                 <Check size={12} /> Mark all read
               </button>
             )}
             <button
               onClick={fetchNotifications}
-              className="text-xs font-semibold text-foreground/60 hover:text-foreground transition flex items-center gap-1 border border-border/50 rounded-lg px-2 py-1"
+              className="text-xs font-semibold text-foreground/70 hover:text-foreground transition flex items-center gap-1 border border-border/50 rounded-lg px-2.5 py-1.5 bg-foreground/5"
             >
               Refresh
             </button>
@@ -783,7 +830,7 @@ function AdminDashboard() {
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <Bell size={40} className="text-foreground/15 mb-3" />
             <p className="text-sm font-medium text-foreground/50">No notifications yet</p>
-            <p className="text-xs text-foreground/40 mt-1">New customer signups and system events will appear here.</p>
+            <p className="text-xs text-foreground/40 mt-1">New customer signups and system events will appear here in real time.</p>
           </div>
         ) : (
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
@@ -791,20 +838,20 @@ function AdminDashboard() {
               <div
                 key={notif.id}
                 onClick={() => !notif.read && markNotificationRead(notif.id)}
-                className={`flex gap-3 p-3 rounded-xl border cursor-pointer transition ${
+                className={`flex gap-2.5 sm:gap-3 p-3 rounded-xl border cursor-pointer transition ${
                   notif.read
                     ? "bg-foreground/3 border-border/30 opacity-60"
                     : "bg-brand-deep/5 border-brand-deep/15 hover:bg-brand-deep/10"
                 }`}
               >
-                <div className={`shrink-0 mt-0.5 flex h-9 w-9 items-center justify-center rounded-full ${
+                <div className={`shrink-0 mt-0.5 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full ${
                   notif.type === "new_customer" ? "bg-green-100 text-green-600" : "bg-brand/10 text-brand-deep"
                 }`}>
                   {notif.type === "new_customer" ? <UserPlus size={16} /> : <Bell size={16} />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className={`text-sm font-semibold ${notif.read ? "text-foreground/60" : "text-foreground"}`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <p className={`text-xs sm:text-sm font-semibold truncate ${notif.read ? "text-foreground/60" : "text-foreground"}`}>
                       {notif.title}
                     </p>
                     <div className="flex items-center gap-1.5 shrink-0">
@@ -822,12 +869,17 @@ function AdminDashboard() {
                       </span>
                     </div>
                   </div>
-                  <p className="text-xs text-foreground/60 mt-0.5 leading-snug">{notif.message}</p>
+                  <p className="text-xs text-foreground/60 mt-1 leading-snug break-words">{notif.message}</p>
                   {notif.meta && Object.keys(notif.meta).length > 0 && (
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {notif.meta["phone"] && (
                         <span className="text-[10px] bg-foreground/5 rounded-md px-1.5 py-0.5 font-medium text-foreground/60">
                           📞 {notif.meta["phone"]}
+                        </span>
+                      )}
+                      {notif.meta["email"] && (
+                        <span className="text-[10px] bg-foreground/5 rounded-md px-1.5 py-0.5 font-medium text-foreground/60 truncate max-w-[200px]">
+                          ✉️ {notif.meta["email"]}
                         </span>
                       )}
                     </div>

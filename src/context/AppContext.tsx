@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { User, DailyLog, TiffinStatus, AppNotification } from "@/data/mockData";
 import { toast } from "sonner";
 import { api, BASE_URL } from "@/api/client";
+import { triggerSystemNotification } from "@/utils/notifications";
 
 interface AppContextType {
   // Auth
@@ -74,6 +75,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
   }, [currentUser]);
 
+  // Track known notifications to trigger real-time device alerts for newly added ones
+  const knownNotificationIds = useRef<Set<string>>(new Set());
+  const isInitialLoad = useRef<boolean>(true);
+
   // Separate effect for fetching data so updating currentUser doesn't cause infinite loops
   useEffect(() => {
     if (currentUser) {
@@ -85,6 +90,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [currentUser?.id, currentUser?.role]);
+
+  // Real-time live background polling every 8 seconds for Admin
+  useEffect(() => {
+    if (currentUser?.role !== "Admin") return;
+
+    const intervalId = setInterval(() => {
+      fetchNotifications();
+    }, 8000);
+
+    return () => clearInterval(intervalId);
+  }, [currentUser?.role]);
 
   const fetchCustomers = async () => {
     try {
@@ -106,7 +122,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       const data = await api.getAdminNotifications();
       const arr = Array.isArray(data) ? data : ((data as any)?.data ?? []);
-      setNotifications(arr.map((n: any) => ({
+      const mapped: AppNotification[] = arr.map((n: any) => ({
         id: String(n.id),
         type: n.type || "general",
         title: n.title || "Notification",
@@ -114,7 +130,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         createdAt: n.created_at || n.createdAt || new Date().toISOString(),
         read: Boolean(n.read),
         meta: n.meta || {}
-      })));
+      }));
+
+      if (isInitialLoad.current) {
+        // Initial load: populate known IDs without alerting for past history
+        mapped.forEach(n => knownNotificationIds.current.add(n.id));
+        isInitialLoad.current = false;
+      } else {
+        // Real-time check: find newly added notifications that arrived while admin is on the page
+        const newlyAdded = mapped.filter(n => !knownNotificationIds.current.has(n.id));
+        newlyAdded.forEach(newNotif => {
+          knownNotificationIds.current.add(newNotif.id);
+          // Actual device alert (chime sound + vibration + phone system notification)
+          triggerSystemNotification(`🔔 ${newNotif.title}`, newNotif.message);
+          // Toast popup on the screen
+          toast.info(`${newNotif.title}: ${newNotif.message}`, {
+            duration: 8000,
+          });
+        });
+      }
+
+      setNotifications(mapped);
     } catch (e) {
       console.error(e);
     }
