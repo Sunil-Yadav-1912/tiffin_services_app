@@ -1,5 +1,15 @@
 export type UserRole = "Admin" | "Customer";
 
+export interface AppNotification {
+  id: string;
+  type: "new_customer" | "order" | "general";
+  title: string;
+  message: string;
+  createdAt: string; // ISO datetime string
+  read: boolean;
+  meta?: Record<string, string | number>;
+}
+
 export interface User {
   id: string;
   name: string;

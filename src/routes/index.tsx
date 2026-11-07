@@ -1,11 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, Clock3, MessageCircle, Star, X, Leaf, ShieldCheck, HeartHandshake, Utensils } from "lucide-react";
+import { ArrowUpRight, Check, Clock3, Star, X, Leaf, ShieldCheck, HeartHandshake, Utensils, UserPlus } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import heroImage from "@/assets/tiffin-hero.jpg";
 import { Tiffin } from "@/data/tiffins";
 import { api } from "@/api/client";
-import { getWhatsAppLink } from "@/config/business";
 import {
   Accordion,
   AccordionContent,
@@ -42,15 +41,15 @@ function Index() {
               Fresh, Homemade Tiffins Delivered With Care.
             </h1>
             <p className="mt-4 max-w-md text-[15px] leading-relaxed text-foreground/65">
-              Delicious, hygienic and affordable homemade meals prepared fresh for your everyday needs. Order in one tap on WhatsApp.
+              Delicious, hygienic and affordable homemade meals prepared fresh for your everyday needs. Sign up today to start your daily plan.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link to="/tiffins" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-accent-foreground shadow-lg shadow-accent/30 transition hover:brightness-105">
                 Explore Tiffins <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
-              <a href={getWhatsAppLink("Hi Crownora Group! I would like to place an order.")} target="_blank" rel="noreferrer" className="glass-panel inline-flex min-h-12 items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-foreground/80 transition hover:text-brand-deep">
-                <MessageCircle size={16} /> Order on WhatsApp
-              </a>
+              <Link to="/signup" className="glass-panel inline-flex min-h-12 items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-foreground/80 transition hover:text-brand-deep">
+                <UserPlus size={16} /> Sign Up Now
+              </Link>
             </div>
             <div className="mt-8 flex w-full items-center justify-between divide-x divide-foreground/10 sm:w-auto sm:justify-start">
               <div className="flex-1 pr-2 sm:flex-none sm:pr-8">
@@ -163,14 +162,12 @@ function Index() {
                   <span className="font-display text-2xl font-extrabold text-foreground">₹1,200</span>
                   <span className="text-xs text-muted-foreground ml-1">/ mo</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Monthly Breakfast Plan (₹1200).")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
                 >
                   Join
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -189,14 +186,12 @@ function Index() {
                   <span className="font-display text-2xl font-extrabold text-foreground">₹1,800</span>
                   <span className="text-xs text-muted-foreground ml-1">/ mo</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Monthly Lunch Plan (₹1800).")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
                 >
                   Join
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -215,14 +210,12 @@ function Index() {
                   <span className="font-display text-2xl font-extrabold text-foreground">₹2,100</span>
                   <span className="text-xs text-muted-foreground ml-1">/ mo</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Monthly Dinner Plan (₹2100).")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
                 >
                   Join
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -241,14 +234,12 @@ function Index() {
                   <span className="font-display text-2xl font-extrabold text-foreground">₹2,800</span>
                   <span className="text-xs text-muted-foreground ml-1">/ mo</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Breakfast + Lunch Combo (₹2800).")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
                 >
                   Join
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -267,14 +258,12 @@ function Index() {
                   <span className="font-display text-2xl font-extrabold text-foreground">₹2,800</span>
                   <span className="text-xs text-muted-foreground ml-1">/ mo</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Breakfast + Dinner Combo (₹2800).")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
                 >
                   Join
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -293,14 +282,12 @@ function Index() {
                   <span className="font-display text-2xl font-extrabold text-foreground">₹3,300</span>
                   <span className="text-xs text-muted-foreground ml-1">/ mo</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Lunch + Dinner Combo (₹3300).")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-brand-deep px-3 py-1.5 text-xs font-bold text-white hover:bg-brand transition"
                 >
                   Join
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -322,14 +309,12 @@ function Index() {
                   <span className="font-display text-3xl font-extrabold text-foreground">₹3,800</span>
                   <span className="text-xs text-muted-foreground ml-1 font-semibold">/ month</span>
                 </div>
-                <a
-                  href={getWhatsAppLink("Hi! I want to subscribe to Full Mess Plan (Breakfast + Lunch + Dinner) for ₹3800.")}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/signup"
                   className="rounded-xl bg-accent px-4 py-2 text-xs font-extrabold text-accent-foreground hover:brightness-110 shadow-md transition"
                 >
                   Subscribe Full Mess
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -368,8 +353,8 @@ function Index() {
             </div>
             <div className="text-center">
               <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-brand/10 text-brand-deep font-display text-xl font-bold mb-4">2</div>
-              <h3 className="font-bold text-lg">Contact Us</h3>
-              <p className="mt-2 text-sm text-foreground/70">Message us directly on WhatsApp to check availability.</p>
+              <h3 className="font-bold text-lg">Sign Up &amp; Enquire</h3>
+              <p className="mt-2 text-sm text-foreground/70">Create an account or submit an enquiry with your hostel/delivery area.</p>
             </div>
             <div className="text-center">
               <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-brand/10 text-brand-deep font-display text-xl font-bold mb-4">3</div>
@@ -402,7 +387,7 @@ function Index() {
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-left font-semibold">What areas do you deliver to?</AccordionTrigger>
               <AccordionContent className="text-foreground/70">
-                We currently deliver across major areas in Pune including Shivaji Nagar, Kothrud, Baner, and Viman Nagar. Please WhatsApp us with your exact location to confirm.
+                We currently deliver across major areas in Pune including Shivaji Nagar, Kothrud, Baner, and Viman Nagar. Please sign up and enter your delivery address to get started.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
@@ -420,13 +405,13 @@ function Index() {
             <AccordionItem value="item-4">
               <AccordionTrigger className="text-left font-semibold">How do I place an order?</AccordionTrigger>
               <AccordionContent className="text-foreground/70">
-                Simply browse our tiffins, choose what you like, and tap the WhatsApp button. You'll be connected directly to us to confirm your order and delivery details.
+                Simply browse our tiffins, choose what you like, and submit an enquiry or sign up for an account to manage your daily deliveries and meal schedule.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-5">
               <AccordionTrigger className="text-left font-semibold">Do you accept online payment?</AccordionTrigger>
               <AccordionContent className="text-foreground/70">
-                This website doesn't process payments directly. Once you contact us on WhatsApp, we will share our UPI details or you can opt for Cash on Delivery.
+                You can pay using UPI, bank transfer, or opt for Cash on Delivery. Billing and advance payments can be tracked in your customer portal.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -438,9 +423,9 @@ function Index() {
         <div className="glass-strong rounded-3xl p-8 text-center sm:p-12 shadow-[0_20px_50px_-25px_oklch(0.255_0.045_155_/_30%)]">
           <h2 className="font-display text-3xl font-semibold tracking-tight">Ready to taste the difference?</h2>
           <p className="mt-3 text-foreground/70 max-w-lg mx-auto">Skip the junk food. Get wholesome, nutritious, and delicious meals delivered to your doorstep.</p>
-          <a href={getWhatsAppLink("Hi Crownora Group! I want to start a meal plan.")} target="_blank" rel="noreferrer" className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-brand-deep px-8 py-3 text-base font-bold text-primary-foreground transition hover:bg-brand">
-            <MessageCircle size={20} /> Order on WhatsApp
-          </a>
+          <Link to="/signup" className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-xl bg-brand-deep px-8 py-3 text-base font-bold text-primary-foreground transition hover:bg-brand">
+            <UserPlus size={20} /> Sign Up Now
+          </Link>
         </div>
       </section>
 
@@ -523,7 +508,7 @@ function MealCard({ plan, onView }: { plan: Tiffin; onView: () => void }) {
           Details
         </Link>
         <Link to={`/tiffins/$id`} params={{ id: plan.id }} className={`flex-1 inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-bold transition ${isPremium ? "bg-accent text-accent-foreground hover:brightness-105" : "bg-brand-deep text-primary-foreground hover:bg-brand"}`}>
-          <MessageCircle size={16} aria-hidden="true" /> Order
+          <UserPlus size={16} aria-hidden="true" /> Order
         </Link>
       </div>
     </article>
@@ -559,7 +544,7 @@ function PlanDialog({ plan, onClose }: { plan: Tiffin; onClose: () => void }) {
             <span className="ml-1 text-sm text-muted-foreground">/meal</span>
           </div>
           <Link to={`/tiffins/$id`} params={{ id: plan.id }} className="inline-flex min-h-12 flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-accent-foreground transition hover:brightness-105">
-            <MessageCircle size={16} /> Place Enquiry
+            <UserPlus size={16} /> Place Enquiry
           </Link>
         </div>
       </div>

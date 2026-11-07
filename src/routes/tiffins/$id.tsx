@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { MessageCircle, Check, ArrowLeft, Clock3, Utensils, Info, Loader2 } from "lucide-react";
+import { Check, ArrowLeft, Clock3, Utensils, Info, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import { Tiffin } from "@/data/tiffins";
 import { api } from "@/api/client";
-import { getWhatsAppLink } from "@/config/business";
 import { OrderEnquiryForm } from "@/components/OrderEnquiryForm";
 
 export const Route = createFileRoute("/tiffins/$id")({
@@ -120,7 +119,7 @@ function TiffinDetailPage() {
               <div className="mt-10 rounded-2xl bg-foreground/5 p-5 border border-foreground/10">
                 <h3 className="font-bold mb-2 text-xl">Place an Enquiry</h3>
                 <p className="text-sm text-foreground/70 mb-5">
-                  Enter your details to check availability for your area and place an order directly with the kitchen via WhatsApp.
+                  Enter your details to check availability for your area and place an order. Our team will contact you to confirm.
                 </p>
 
                 <OrderEnquiryForm
@@ -163,7 +162,7 @@ function TiffinDetailPage() {
             <div className="shrink-0 mt-1 text-brand"><Info size={24} /></div>
             <div>
               <h4 className="font-bold">Customization</h4>
-              <p className="mt-1 text-sm text-foreground/70">Need less spice or have allergies? Let us know on WhatsApp.</p>
+              <p className="mt-1 text-sm text-foreground/70">Need less spice or have allergies? Let us know in the enquiry form above.</p>
             </div>
           </div>
         </div>

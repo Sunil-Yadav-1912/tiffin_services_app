@@ -1,5 +1,5 @@
-import { Phone, MessageCircle, User as UserIcon } from "lucide-react";
-import { businessInfo, getWhatsAppLink } from "@/config/business";
+import { Phone, UserPlus, User as UserIcon } from "lucide-react";
+import { businessInfo } from "@/config/business";
 import { useApp } from "@/context/AppContext";
 import { Link } from "@tanstack/react-router";
 
@@ -30,15 +30,13 @@ export function MobileBottomBar() {
             </Link>
           )}
 
-          <a
-            href={getWhatsAppLink()}
-            target="_blank"
-            rel="noreferrer"
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-2 py-3.5 text-xs sm:text-sm font-bold text-white shadow-sm transition active:scale-[0.98]"
+          <Link
+            to="/signup"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-deep px-2 py-3.5 text-xs sm:text-sm font-bold text-white shadow-sm transition active:scale-[0.98]"
           >
-            <MessageCircle size={16} />
-            <span>WA</span>
-          </a>
+            <UserPlus size={16} />
+            <span>Sign Up</span>
+          </Link>
           
           <a
             href={`tel:${businessInfo.phone.replace(/[^0-9+]/g, '')}`}

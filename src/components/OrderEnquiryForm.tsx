@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { Link } from "@tanstack/react-router";
 import { submitEnquiry } from "@/services/apiService";
-import { createWhatsAppOrderLink, OrderDetails } from "@/utils/whatsapp";
+// WhatsApp integration is currently disabled.
+// import { createWhatsAppOrderLink, OrderDetails } from "@/utils/whatsapp";
 
 interface OrderEnquiryFormProps {
   tiffinId: string;
@@ -49,7 +51,9 @@ export function OrderEnquiryForm({ tiffinId, tiffinName, tiffinPrice, availableM
     localStorage.setItem("crownora_customer_phone", phone.trim());
     localStorage.setItem("crownora_customer_address", address.trim());
 
-    const orderDetails: OrderDetails = {
+    // Submit enquiry to backend
+    await submitEnquiry({
+      tiffinId,
       customerName: name.trim(),
       phone: phone.trim(),
       tiffinName,
@@ -58,33 +62,34 @@ export function OrderEnquiryForm({ tiffinId, tiffinName, tiffinPrice, availableM
       meal,
       address: address.trim(),
       message: message.trim(),
-    };
-
-    // 1. Submit to optional endpoint (does not block on failure)
-    await submitEnquiry({
-      tiffinId,
-      ...orderDetails
     });
 
     setSuccess(true);
     setIsSubmitting(false);
 
-    // 2. Open WhatsApp
-    const waLink = createWhatsAppOrderLink(orderDetails);
-    window.open(waLink, "_blank");
-    
-    // Reset success state after a few seconds
-    setTimeout(() => setSuccess(false), 5000);
+    // WhatsApp redirect is disabled – redirecting to signup instead
+    // const waLink = createWhatsAppOrderLink(orderDetails);
+    // window.open(waLink, "_blank");
+
+    setTimeout(() => setSuccess(false), 6000);
   };
 
   if (success) {
     return (
-      <div className="rounded-2xl bg-[#25D366]/10 p-6 text-center text-[#128C7E] ring-1 ring-[#25D366]/30">
-        <h3 className="font-display text-xl font-bold mb-2">Redirecting to WhatsApp...</h3>
-        <p className="text-sm">If WhatsApp doesn't open automatically, please ensure you don't have popups blocked.</p>
+      <div className="rounded-2xl bg-brand-deep/10 p-6 text-center text-brand-deep ring-1 ring-brand-deep/30">
+        <h3 className="font-display text-xl font-bold mb-2">Enquiry Submitted! 🎉</h3>
+        <p className="text-sm mb-4">
+          Thank you for your interest in <strong>{tiffinName}</strong>. Create an account to track your orders and manage your subscription.
+        </p>
+        <Link
+          to="/signup"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-deep px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-brand"
+        >
+          Create Account →
+        </Link>
         <button 
           onClick={() => setSuccess(false)}
-          className="mt-4 text-xs font-semibold underline underline-offset-2"
+          className="mt-4 block mx-auto text-xs font-semibold underline underline-offset-2 text-brand-deep/60"
         >
           Submit another enquiry
         </button>
@@ -168,10 +173,10 @@ export function OrderEnquiryForm({ tiffinId, tiffinName, tiffinPrice, availableM
         disabled={isSubmitting}
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-deep py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition hover:bg-brand disabled:opacity-70"
       >
-        {isSubmitting ? "Processing..." : "Continue to WhatsApp"}
+        {isSubmitting ? "Submitting..." : "Submit Enquiry"}
       </button>
       <p className="mt-2 text-center text-[11px] text-foreground/50">
-        You won't be charged yet. You will confirm your order with us on WhatsApp.
+        You won't be charged yet. Our team will contact you to confirm your order.
       </p>
     </form>
   );

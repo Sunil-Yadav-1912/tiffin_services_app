@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { MessageCircle, Menu, X, User as UserIcon, LogOut } from "lucide-react";
+import { UserPlus, Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import { useState } from "react";
-import { getWhatsAppLink } from "@/config/business";
 import { useApp } from "@/context/AppContext";
 
 export function Header() {
@@ -74,15 +73,23 @@ export function Header() {
             </Link>
           )}
 
-          <a
-            href={getWhatsAppLink()}
-            target="_blank"
-            rel="noreferrer"
-            className="hidden sm:inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand-deep px-3.5 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand sm:px-4"
-          >
-            <MessageCircle size={16} aria-hidden="true" />
-            <span>Order on WhatsApp</span>
-          </a>
+          {currentUser ? (
+            <Link
+              to={currentUser.role === "Admin" ? "/admin/dashboard" : "/customer/dashboard"}
+              className="hidden sm:inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand-deep px-3.5 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand sm:px-4"
+            >
+              <UserIcon size={16} />
+              <span>Dashboard</span>
+            </Link>
+          ) : (
+            <Link
+              to="/signup"
+              className="hidden sm:inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand-deep px-3.5 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand sm:px-4"
+            >
+              <UserPlus size={16} aria-hidden="true" />
+              <span>Sign Up</span>
+            </Link>
+          )}
 
           {/* Mobile Menu Toggle */}
           <button
@@ -135,15 +142,16 @@ export function Header() {
                 Login
               </Link>
             )}
-            <a
-              href={getWhatsAppLink()}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-deep px-4 py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition hover:bg-brand"
-            >
-              <MessageCircle size={18} aria-hidden="true" />
-              Order on WhatsApp
-            </a>
+            {currentUser ? null : (
+              <Link
+                to="/signup"
+                onClick={closeMenu}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-deep px-4 py-3.5 text-sm font-bold text-primary-foreground shadow-lg transition hover:bg-brand"
+              >
+                <UserPlus size={18} aria-hidden="true" />
+                Sign Up
+              </Link>
+            )}
           </nav>
         </div>
       )}

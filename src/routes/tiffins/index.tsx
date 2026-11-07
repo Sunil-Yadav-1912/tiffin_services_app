@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
-import { MessageCircle, Search, FilterX, Clock, Sunrise, Sun, Moon, ArrowRight, ShieldCheck } from "lucide-react";
+import { Search, FilterX, Clock, Sunrise, Sun, Moon, ArrowRight, ShieldCheck, UserPlus } from "lucide-react";
 
 import { DietType, Category, MealType, Tiffin } from "@/data/tiffins";
 import { api } from "@/api/client";
-import { getWhatsAppLink } from "@/config/business";
 
 export const Route = createFileRoute("/tiffins/")({
   component: TiffinsPage,
@@ -313,18 +312,12 @@ function TiffinCard({ tiffin }: { tiffin: Tiffin }) {
           >
             Details
           </Link>
-          <a
-            href={getWhatsAppLink(
-              isMonthly 
-                ? `Hi! I want to join hostel mess for ${tiffin.name} (₹${tiffin.price}/month).`
-                : `Hi! I want to order 1 tiffin: ${tiffin.name} (₹${tiffin.price}).`
-            )}
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            to="/signup"
             className={`inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl px-3.5 text-xs font-bold text-white transition ${isMonthly ? "bg-accent text-accent-foreground hover:brightness-105" : "bg-brand-deep hover:bg-brand"}`}
           >
-            <MessageCircle size={15} /> {isMonthly ? "Join Mess" : "Order Tiffin"}
-          </a>
+            <UserPlus size={15} /> {isMonthly ? "Join Mess" : "Sign Up & Order"}
+          </Link>
         </div>
       </div>
     </article>

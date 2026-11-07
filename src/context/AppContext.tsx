@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User, DailyLog, TiffinStatus } from "@/data/mockData";
+import { User, DailyLog, TiffinStatus, AppNotification } from "@/data/mockData";
 import { toast } from "sonner";
-import { api } from "@/api/client";
+import { api, BASE_URL } from "@/api/client";
 
 interface AppContextType {
   // Auth
@@ -26,6 +26,14 @@ interface AppContextType {
   addLeave: (from: string, to: string) => Promise<void>;
   deleteLeave: (id: string) => Promise<void>;
   fetchCustomerData: () => Promise<void>;
+
+  // Notifications (admin)
+  notifications: AppNotification[];
+  unreadCount: number;
+  fetchNotifications: () => Promise<void>;
+  markNotificationRead: (id: string) => Promise<void>;
+  markAllNotificationsRead: () => Promise<void>;
+  addLocalNotification: (n: Omit<AppNotification, "id" | "createdAt" | "read">) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -33,6 +41,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
   const [logs, setLogs] = useState<DailyLog[]>([]);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
 
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     if (typeof window === "undefined") return null;
@@ -70,6 +79,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (currentUser) {
       if (currentUser.role === "Admin") {
         fetchCustomers();
+        fetchNotifications();
       } else {
         fetchCustomerData();
       }
@@ -90,6 +100,50 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await api.getAdminNotifications();
+      const arr = Array.isArray(data) ? data : ((data as any)?.data ?? []);
+      setNotifications(arr.map((n: any) => ({
+        id: String(n.id),
+        type: n.type || "general",
+        title: n.title || "Notification",
+        message: n.message || "",
+        createdAt: n.created_at || n.createdAt || new Date().toISOString(),
+        read: Boolean(n.read),
+        meta: n.meta || {}
+      })));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const markNotificationRead = async (id: string) => {
+    await api.markNotificationRead(id);
+    setNotifications(prev =>
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    );
+  };
+
+  const markAllNotificationsRead = async () => {
+    await api.markAllNotificationsRead();
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  /**
+   * Add a local (optimistic) notification — used for instant UI feedback
+   * (e.g. right after a customer self-registers via the signup page).
+   */
+  const addLocalNotification = (n: Omit<AppNotification, "id" | "createdAt" | "read">) => {
+    const notification: AppNotification = {
+      ...n,
+      id: `local-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      read: false
+    };
+    setNotifications(prev => [notification, ...prev]);
   };
 
   const fetchDailyLogs = async (date: string) => {
@@ -198,17 +252,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const signup = async (data: Omit<User, "id" | "role">) => {
     try {
-      // Assuming POST /admin/customers works for open signup too, or we have a generic register
-      // The guide didn't specify a signup endpoint, so we fallback to a mock or just return true
+      const res = await api.register({
+        name: data.name,
+        email: data.email,
+        password: data.password || "",
+        ...(data.phone !== undefined ? { phone: data.phone } : {}),
+        ...(data.address !== undefined ? { address: data.address } : {})
+      });
+      // Backend may return access_token + user (similar to login), or just user
+      if (res.access_token) {
+        localStorage.setItem("crownora_token", res.access_token);
+      }
+      const u = res.user || res;
       const newUser: User = {
-        ...data,
-        id: `cust-${Date.now()}`,
+        id: String(u.id || `cust-${Date.now()}`),
+        name: u.name || data.name,
+        email: u.email || data.email,
         role: "Customer",
+        phone: u.phone || data.phone,
+        address: u.address || data.address,
+        tiffinIds: [],
+        advancePayment: 0
       };
-      // If we had a register endpoint: await api.register(data)
       setCurrentUser(newUser);
       return true;
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(e?.message || "Signup failed. Please try again.");
       return false;
     }
   };
@@ -234,15 +303,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         });
         setCurrentUser(prev => prev ? { ...prev, ...data } : null);
       } else {
-        // Map frontend camelCase to backend snake_case
-        const payload = { ...data };
-        if (payload.tiffinIds) {
-          payload.tiffin_ids = payload.tiffinIds;
-          delete payload.tiffinIds;
+        // Map frontend camelCase to backend snake_case for the API payload
+        const payload: Record<string, any> = { ...data };
+        if (payload["tiffinIds"]) {
+          payload["tiffin_ids"] = payload["tiffinIds"];
+          delete payload["tiffinIds"];
         }
-        if (payload.advancePayment !== undefined) {
-          payload.advance_payment = payload.advancePayment;
-          delete payload.advancePayment;
+        if (payload["advancePayment"] !== undefined) {
+          payload["advance_payment"] = payload["advancePayment"];
+          delete payload["advancePayment"];
         }
         await api.updateCustomer(id, payload);
         setUsers(prev => prev.map(u => u.id === id ? { ...u, ...data } : u));
@@ -317,7 +386,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       currentUser, login, logout, signup,
       users, logs,
       deleteUser, updateUser, updateLogStatus, cancelTiffinForDateRange, addLeave, deleteLeave,
-      fetchDailyLogs, fetchCustomers, fetchCustomerData
+      fetchDailyLogs, fetchCustomers, fetchCustomerData,
+      // Notifications
+      notifications,
+      unreadCount: notifications.filter(n => !n.read).length,
+      fetchNotifications,
+      markNotificationRead,
+      markAllNotificationsRead,
+      addLocalNotification
     }}>
       {children}
     </AppContext.Provider>

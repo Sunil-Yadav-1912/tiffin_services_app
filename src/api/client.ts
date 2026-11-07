@@ -219,5 +219,60 @@ export const api = {
       body: JSON.stringify(monthYear ? { month_year: monthYear } : {})
     });
     return res.json();
+  },
+
+  // Notifications (admin)
+  getAdminNotifications: async () => {
+    try {
+      const res = await fetchWithAuth(`${BASE_URL}/admin/notifications`, { cache: "no-store" });
+      if (!res.ok) return [];
+      return res.json();
+    } catch (e) {
+      return [];
+    }
+  },
+  markNotificationRead: async (id: string | number) => {
+    try {
+      const res = await fetchWithAuth(`${BASE_URL}/admin/notifications/${id}/read`, {
+        method: "PUT",
+        headers: getHeaders()
+      });
+      if (!res.ok) return null;
+      return res.json();
+    } catch (e) {
+      return null;
+    }
+  },
+  markAllNotificationsRead: async () => {
+    try {
+      const res = await fetchWithAuth(`${BASE_URL}/admin/notifications/read-all`, {
+        method: "PUT",
+        headers: getHeaders()
+      });
+      if (!res.ok) return null;
+      return res.json();
+    } catch (e) {
+      return null;
+    }
+  },
+
+  // Public customer registration (signup)
+  register: async (data: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    address?: string;
+  }) => {
+    const res = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Registration failed");
+    }
+    return res.json();
   }
 };

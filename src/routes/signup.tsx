@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { toast } from "sonner";
-import { ArrowRight, User, Mail, Lock, Phone, MapPin } from "lucide-react";
+import { ArrowRight, User, Mail, Lock, Phone, MapPin, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/signup")({
   component: Signup,
@@ -14,8 +14,9 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   
-  const { signup, currentUser } = useApp();
+  const { signup, currentUser, addLocalNotification } = useApp();
   const navigate = useNavigate();
 
   if (currentUser) {
@@ -25,10 +26,22 @@ function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signup({
+    setIsLoading(true);
+    const success = await signup({
       name, email, password, phone, address
     });
-    toast.success("Account created successfully!");
+    setIsLoading(false);
+    if (success) {
+      // Fire a local notification so admin sees it immediately upon next login
+      addLocalNotification({
+        type: "new_customer",
+        title: "New Customer Registered",
+        message: `${name} (${email}) just signed up via the website.`,
+        meta: { name, email, phone: phone || "" }
+      });
+      toast.success("Account created successfully! Welcome aboard 🎉");
+      navigate({ to: "/customer/dashboard" });
+    }
   };
 
   return (
@@ -131,15 +144,21 @@ function Signup() {
                   className="w-full rounded-xl border-none bg-foreground/5 py-3 pl-10 pr-4 text-sm font-medium transition focus:bg-background focus:ring-2 focus:ring-brand-deep/50"
                   placeholder="Create a password"
                   required
+                  minLength={6}
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="mt-4 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-deep px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand"
+              disabled={isLoading}
+              className="mt-4 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-deep px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand disabled:opacity-60"
             >
-              Sign Up <ArrowRight size={16} />
+              {isLoading ? (
+                <><Loader2 size={16} className="animate-spin" /> Creating account...</>
+              ) : (
+                <>Sign Up <ArrowRight size={16} /></>
+              )}
             </button>
           </form>
 

@@ -1,9 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, UserPlus, Sparkles } from "lucide-react";
 
 import { businessInfo } from "@/config/business";
-import { WhatsAppQR } from "@/components/WhatsAppQR";
 import { submitEnquiry } from "@/services/apiService";
 
 export const Route = createFileRoute("/contact")({
@@ -147,9 +146,42 @@ function ContactPage() {
             </div>
           </div>
 
-          {/* Right Column: WhatsApp QR */}
+          {/* Right Column: Customer Signup Card */}
           <div className="lg:sticky lg:top-24">
-            <WhatsAppQR />
+            <div className="glass-panel flex flex-col items-center justify-center rounded-3xl p-8 text-center shadow-[0_20px_50px_-25px_oklch(0.255_0.045_155_/_20%)]">
+              <div className="mb-4 grid size-16 place-items-center rounded-2xl bg-brand/10 text-brand-deep">
+                <Sparkles size={32} />
+              </div>
+              <h3 className="font-display text-2xl font-bold">Start Your Meal Plan</h3>
+              <p className="mt-3 max-w-sm text-sm text-foreground/70">
+                Join hundreds of students and professionals who trust Crownora Group for wholesome, hygienic daily homemade meals.
+              </p>
+              
+              <div className="my-6 w-full space-y-3 rounded-2xl bg-foreground/5 p-4 text-left text-xs text-foreground/80">
+                <div className="flex items-center gap-2">
+                  <span className="text-brand-deep font-bold">✓</span> Flexible hostel mess subscriptions
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-brand-deep font-bold">✓</span> Schedule skip dates easily from your portal
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-brand-deep font-bold">✓</span> Transparent monthly invoicing &amp; advance tracking
+                </div>
+              </div>
+              
+              <Link
+                to="/signup"
+                className="inline-flex min-h-12 w-full max-w-[240px] items-center justify-center gap-2 rounded-xl bg-brand-deep px-5 py-3 text-sm font-bold text-primary-foreground transition hover:bg-brand shadow-lg"
+              >
+                <UserPlus size={18} />
+                <span>Create an Account</span>
+              </Link>
+              
+              <div className="mt-6 text-sm font-medium">
+                <p className="text-foreground/80">{businessInfo.phone}</p>
+                <p className="text-foreground/50">{businessInfo.email}</p>
+              </div>
+            </div>
           </div>
 
         </div>

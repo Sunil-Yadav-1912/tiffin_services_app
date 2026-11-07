@@ -10,13 +10,12 @@ import {
   Wallet,
   CheckCircle2,
   HelpCircle,
-  MessageCircle,
+  Mail,
   ArrowLeft,
   Sunrise,
   Sun,
   Moon,
 } from "lucide-react";
-import { getWhatsAppLink } from "@/config/business";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
@@ -233,17 +232,15 @@ function TermsPage() {
           <HelpCircle className="size-10 text-brand-deep mx-auto mb-3" />
           <h3 className="font-display text-xl font-bold">Have Questions About Mess Policies?</h3>
           <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">
-            Contact the mess management team directly via WhatsApp for any clarifications regarding subscriptions, meal skips, or deposits.
+            Contact our mess management team for any clarifications regarding subscriptions, meal skips, or deposits.
           </p>
           <div className="mt-5">
-            <a
-              href={getWhatsAppLink("Hi! I have a question regarding the hostel mess terms and conditions.")}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/contact"
               className="inline-flex items-center gap-2 rounded-xl bg-brand-deep px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-lg hover:bg-brand transition"
             >
-              <MessageCircle size={16} /> Contact Mess Owner
-            </a>
+              <Mail size={16} /> Contact Mess Owner
+            </Link>
           </div>
         </div>
       </div>
