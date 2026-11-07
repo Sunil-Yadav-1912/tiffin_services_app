@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from "r
 import { User, DailyLog, TiffinStatus, AppNotification } from "@/data/mockData";
 import { toast } from "sonner";
 import { api, BASE_URL } from "@/api/client";
-import { triggerSystemNotification } from "@/utils/notifications";
+import { triggerSystemNotification, initPushNotifications } from "@/utils/notifications";
 
 interface AppContextType {
   // Auth
@@ -85,6 +85,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (currentUser.role === "Admin") {
         fetchCustomers();
         fetchNotifications();
+        initPushNotifications();
       } else {
         fetchCustomerData();
       }

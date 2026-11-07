@@ -255,6 +255,28 @@ export const api = {
       return null;
     }
   },
+  getVapidPublicKey: async (): Promise<string | null> => {
+    try {
+      const res = await fetchWithAuth(`${BASE_URL}/admin/vapid-public-key`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.public_key || null;
+    } catch (e) {
+      return null;
+    }
+  },
+  savePushSubscription: async (subscription: any): Promise<boolean> => {
+    try {
+      const res = await fetchWithAuth(`${BASE_URL}/admin/push-subscription`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify(subscription)
+      });
+      return res.ok;
+    } catch (e) {
+      return false;
+    }
+  },
 
   // Public customer registration (signup)
   register: async (data: {

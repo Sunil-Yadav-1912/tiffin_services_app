@@ -7,7 +7,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { format, formatDistanceToNow } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { requestNotificationPermission, getNotificationPermissionStatus, playNotificationSound } from "@/utils/notifications";
+import { requestNotificationPermission, getNotificationPermissionStatus, playNotificationSound, initPushNotifications } from "@/utils/notifications";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: AdminDashboard,
@@ -28,13 +28,14 @@ function AdminDashboard() {
 
   useEffect(() => {
     setNotifPermission(getNotificationPermissionStatus());
+    initPushNotifications();
   }, []);
 
   const handleEnableAlerts = async () => {
     const perm = await requestNotificationPermission();
     setNotifPermission(perm);
     if (perm === "granted") {
-      toast.success("Real-time sound and phone alerts are enabled!");
+      toast.success("Phone notification bar & background alerts enabled!");
     } else if (perm === "denied") {
       toast.error("Notification permission was blocked in browser. Please enable notifications in site settings.");
     } else {
@@ -344,7 +345,7 @@ function AdminDashboard() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 sm:gap-2">
-                          <p className={`text-xs sm:text-sm font-semibold truncate ${notif.read ? "text-foreground/60" : "text-foreground"}`}>
+                          <p className={`text-xs sm:text-sm font-semibold break-words sm:truncate ${notif.read ? "text-foreground/60" : "text-foreground"}`}>
                             {notif.title}
                           </p>
                           <div className="flex items-center gap-1.5 shrink-0">
@@ -363,6 +364,20 @@ function AdminDashboard() {
                           </div>
                         </div>
                         <p className="text-xs text-foreground/60 mt-1 leading-snug break-words">{notif.message}</p>
+                        {notif.meta && Object.keys(notif.meta).length > 0 && (
+                          <div className="mt-1.5 flex flex-wrap gap-1.5">
+                            {notif.meta["phone"] && (
+                              <span className="text-[10px] bg-foreground/5 rounded-md px-1.5 py-0.5 font-medium text-foreground/60">
+                                📞 {notif.meta["phone"]}
+                              </span>
+                            )}
+                            {notif.meta["email"] && (
+                              <span className="text-[10px] bg-foreground/5 rounded-md px-1.5 py-0.5 font-medium text-foreground/60 truncate max-w-[190px]">
+                                ✉️ {notif.meta["email"]}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))
