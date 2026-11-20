@@ -9,7 +9,7 @@ interface AppContextType {
   currentUser: User | null;
   login: (email: string, pass: string) => Promise<boolean>;
   logout: () => void;
-  signup: (data: Omit<User, "id" | "role">) => Promise<boolean>;
+  signup: (data: Omit<User, "id" | "role"> & { tiffin_id?: string | number; tiffin_ids?: string[] }) => Promise<boolean>;
 
   // Data
   users: User[];
@@ -246,7 +246,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           name: u.name,
           email: u.email,
           role: u.role,
-          tiffinIds: Array.isArray(u.tiffin_ids) ? u.tiffin_ids.map(String) : [],
+          tiffinIds: u.tiffins ? u.tiffins.map((t: any) => String(t.id)) : (Array.isArray(u.tiffin_ids) ? u.tiffin_ids.map(String) : []),
           advancePayment: Number(u.advance_payment) || 0
         });
         return true;
@@ -287,14 +287,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     window.location.href = "/";
   };
 
-  const signup = async (data: Omit<User, "id" | "role">) => {
+  const signup = async (data: Omit<User, "id" | "role"> & { tiffin_id?: string | number; tiffin_ids?: string[] }) => {
     try {
+      const selectedTiffinIds = data.tiffin_ids || (data.tiffin_id ? [String(data.tiffin_id)] : (data.tiffinIds || []));
       const res = await api.register({
         name: data.name,
         email: data.email,
         password: data.password || "",
         ...(data.phone !== undefined ? { phone: data.phone } : {}),
-        ...(data.address !== undefined ? { address: data.address } : {})
+        ...(data.address !== undefined ? { address: data.address } : {}),
+        ...(selectedTiffinIds.length > 0 ? { tiffin_ids: selectedTiffinIds, tiffin_id: selectedTiffinIds[0] } : {})
       });
       // Backend may return access_token + user (similar to login), or just user
       if (res.access_token) {
@@ -308,7 +310,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         role: "Customer",
         phone: u.phone || data.phone,
         address: u.address || data.address,
-        tiffinIds: [],
+        tiffinIds: u.tiffins ? u.tiffins.map((t: any) => String(t.id)) : (Array.isArray(u.tiffin_ids) ? u.tiffin_ids.map(String) : selectedTiffinIds),
         advancePayment: 0
       };
       setCurrentUser(newUser);

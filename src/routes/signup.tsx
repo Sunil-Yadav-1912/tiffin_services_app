@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useApp } from "@/context/AppContext";
 import { toast } from "sonner";
-import { ArrowRight, User, Mail, Lock, Phone, MapPin, Loader2 } from "lucide-react";
+import { ArrowRight, User, Mail, Lock, Phone, MapPin, Loader2, Utensils, ChevronDown, CheckCircle2 } from "lucide-react";
+import { tiffins as defaultTiffins, Tiffin } from "@/data/tiffins";
+import { api } from "@/api/client";
 
 export const Route = createFileRoute("/signup")({
   component: Signup,
@@ -14,10 +16,45 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [selectedPlanId, setSelectedPlanId] = useState<string>("");
+  const [availablePlans, setAvailablePlans] = useState<Tiffin[]>(defaultTiffins);
   const [isLoading, setIsLoading] = useState(false);
   
   const { signup, currentUser, addLocalNotification } = useApp();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch latest tiffins from API if available
+    api.getTiffins().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setAvailablePlans(data);
+      }
+    }).catch(console.error);
+
+    // Support preselection from URL, e.g. /signup?plan=2 or /signup?tiffin_id=2
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const planParam = params.get("plan") || params.get("tiffin_id");
+      if (planParam) {
+        setSelectedPlanId(planParam);
+      }
+    }
+  }, []);
+
+  // Filter mess/monthly plans just like in admin dashboard
+  const messPlans = useMemo(() => {
+    return availablePlans.filter(t => 
+      t.category === "Monthly" || 
+      Number(t.price) >= 500 || 
+      t.name.toLowerCase().includes("monthly") || 
+      t.name.toLowerCase().includes("combo") || 
+      t.name.toLowerCase().includes("plan")
+    );
+  }, [availablePlans]);
+
+  const selectedPlan = useMemo(() => {
+    return availablePlans.find(p => String(p.id) === String(selectedPlanId));
+  }, [availablePlans, selectedPlanId]);
 
   if (currentUser) {
     navigate({ to: "/customer/dashboard" });
@@ -28,16 +65,24 @@ function Signup() {
     e.preventDefault();
     setIsLoading(true);
     const success = await signup({
-      name, email, password, phone, address
+      name,
+      email,
+      password,
+      phone,
+      address,
+      tiffinIds: selectedPlanId ? [selectedPlanId] : [],
+      tiffin_id: selectedPlanId || undefined,
+      tiffin_ids: selectedPlanId ? [selectedPlanId] : []
     });
     setIsLoading(false);
     if (success) {
+      const planNotice = selectedPlan?.name ? ` with ${selectedPlan.name}` : "";
       // Fire a local notification so admin sees it immediately upon next login
       addLocalNotification({
         type: "new_customer",
         title: "New Customer Registered",
-        message: `${name} (${email}) just signed up via the website.`,
-        meta: { name, email, phone: phone || "" }
+        message: `${name} (${email}) just signed up via the website${planNotice}.`,
+        meta: { name, email, phone: phone || "", meal_plan: selectedPlan?.name || "None" }
       });
       toast.success("Account created successfully! Welcome aboard 🎉");
       navigate({ to: "/customer/dashboard" });
@@ -130,6 +175,64 @@ function Signup() {
               </div>
             </div>
 
+            {/* Meal Plan Dropdown Selection */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-foreground/80" htmlFor="meal-plan">
+                  Hostel Mess / Meal Plan
+                </label>
+                <span className="text-[11px] text-muted-foreground font-medium">Optional</span>
+              </div>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-foreground/40">
+                  <Utensils size={16} />
+                </div>
+                <select
+                  id="meal-plan"
+                  value={selectedPlanId}
+                  onChange={(e) => setSelectedPlanId(e.target.value)}
+                  className="w-full rounded-xl border-none bg-foreground/5 py-3 pl-10 pr-10 text-sm font-medium transition focus:bg-background focus:ring-2 focus:ring-brand-deep/50 appearance-none cursor-pointer"
+                >
+                  <option value="">-- Choose a Meal Plan (Optional) --</option>
+                  {messPlans.map((plan) => (
+                    <option key={plan.id} value={String(plan.id)}>
+                      {plan.name} — ₹{plan.price}/mo
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-foreground/40">
+                  <ChevronDown size={16} />
+                </div>
+              </div>
+
+              {/* Selected Plan Details Preview Card */}
+              {selectedPlan && (
+                <div className="mt-2 rounded-2xl bg-brand-deep/5 border border-brand-deep/20 p-3 text-xs space-y-1.5 transition-all">
+                  <div className="flex items-center justify-between font-bold text-brand-deep">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle2 size={14} className="text-brand-deep shrink-0" />
+                      <span>{selectedPlan.name}</span>
+                    </span>
+                    <span className="text-xs font-extrabold bg-brand-deep/10 text-brand-deep px-2 py-0.5 rounded-full">
+                      ₹{selectedPlan.price}/month
+                    </span>
+                  </div>
+                  {selectedPlan.description && (
+                    <p className="text-foreground/70 text-[11px] leading-relaxed">{selectedPlan.description}</p>
+                  )}
+                  {selectedPlan.itemsIncluded && selectedPlan.itemsIncluded.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      {selectedPlan.itemsIncluded.slice(0, 4).map((item: string, i: number) => (
+                        <span key={i} className="inline-block px-1.5 py-0.5 bg-background rounded-md text-[10px] text-foreground/75 border border-border/50">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-foreground/80" htmlFor="password">Password</label>
               <div className="relative">
@@ -152,7 +255,7 @@ function Signup() {
             <button
               type="submit"
               disabled={isLoading}
-              className="mt-4 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-deep px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand disabled:opacity-60"
+              className="mt-4 w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-deep px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-brand-deep/25 transition hover:bg-brand disabled:opacity-60 cursor-pointer"
             >
               {isLoading ? (
                 <><Loader2 size={16} className="animate-spin" /> Creating account...</>

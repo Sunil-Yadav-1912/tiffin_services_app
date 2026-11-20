@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useApp } from "@/context/AppContext";
 import { useEffect, useState, useMemo } from "react";
-import { Users, CalendarCheck, FileText, Trash2, Edit, Plane, UserIcon, CheckCircle2, Clock, Bell, BellDot, UserPlus, Check, Volume2 } from "lucide-react";
+import { Users, CalendarCheck, FileText, Trash2, Edit, Plane, UserIcon, CheckCircle2, Clock, Bell, BellDot, UserPlus, Check, Volume2, Mail } from "lucide-react";
 import { User, TiffinStatus, AppNotification } from "@/data/mockData";
 import { DatePicker } from "@/components/ui/date-picker";
 import { format, formatDistanceToNow } from "date-fns";
@@ -19,6 +19,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [generatingBills, setGeneratingBills] = useState(false);
+  const [sendingBillingEmail, setSendingBillingEmail] = useState(false);
   const [bills, setBills] = useState<any[]>([]);
   const [tiffins, setTiffins] = useState<any[]>([]);
   
@@ -147,6 +148,24 @@ function AdminDashboard() {
       toast.error("Failed to generate bills");
     } finally {
       setGeneratingBills(false);
+    }
+  };
+
+  const handleSendBillingEmail = async () => {
+    setSendingBillingEmail(true);
+    try {
+      const { api } = await import("@/api/client");
+      const res = await api.sendMonthlyBillingEmail(selectedBillingMonth);
+      if (res.bills_count !== undefined) {
+        toast.success(`Statement with ${res.bills_count} bills emailed to: ${res.recipients_sent?.join(", ") || "admin"}`);
+      } else {
+        toast.success(res.message || "Monthly bills emailed successfully");
+      }
+      fetchNotifications();
+    } catch (e: any) {
+      toast.error(e.message || "Failed to send monthly billing email");
+    } finally {
+      setSendingBillingEmail(false);
     }
   };
 
@@ -650,13 +669,24 @@ function AdminDashboard() {
                       : "No invoices generated yet for this period. Click generate to create or recalculate.")}
                 </p>
               </div>
-              <button 
-                onClick={handleGenerateBills} 
-                disabled={generatingBills}
-                className="rounded-lg bg-brand-deep px-4 py-2 text-xs font-bold text-white transition hover:bg-brand disabled:opacity-50 shrink-0 self-start sm:self-center"
-              >
-                {generatingBills ? "Generating..." : `Generate / Update Invoices`}
-              </button>
+              <div className="flex items-center gap-2 flex-wrap shrink-0 self-start sm:self-center">
+                <button 
+                  onClick={handleGenerateBills} 
+                  disabled={generatingBills || sendingBillingEmail}
+                  className="rounded-lg bg-brand-deep px-3.5 py-2 text-xs font-bold text-white transition hover:bg-brand disabled:opacity-50"
+                >
+                  {generatingBills ? "Generating..." : `Generate / Update Invoices`}
+                </button>
+                <button 
+                  onClick={handleSendBillingEmail} 
+                  disabled={sendingBillingEmail || generatingBills}
+                  className="rounded-lg bg-amber-600 hover:bg-amber-700 px-3.5 py-2 text-xs font-bold text-white transition disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                  title="Trigger automated email of this month's bills to admin"
+                >
+                  <Mail size={13} />
+                  {sendingBillingEmail ? "Sending..." : "Email Bills to Admin"}
+                </button>
+              </div>
             </div>
             
             <table className="w-full text-sm">

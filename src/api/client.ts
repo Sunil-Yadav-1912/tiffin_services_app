@@ -220,6 +220,21 @@ export const api = {
     });
     return res.json();
   },
+  sendMonthlyBillingEmail: async (monthYear?: string, email?: string) => {
+    const res = await fetchWithAuth(`${BASE_URL}/admin/billing/send-email-summary`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({
+        ...(monthYear ? { month_year: monthYear } : {}),
+        ...(email ? { email } : {})
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Failed to send monthly billing email");
+    }
+    return res.json();
+  },
 
   // Notifications (admin)
   getAdminNotifications: async () => {
@@ -285,6 +300,8 @@ export const api = {
     password: string;
     phone?: string;
     address?: string;
+    tiffin_ids?: string[] | number[];
+    tiffin_id?: string | number;
   }) => {
     const res = await fetch(`${BASE_URL}/register`, {
       method: "POST",
