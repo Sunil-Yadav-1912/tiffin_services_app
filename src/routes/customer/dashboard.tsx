@@ -52,8 +52,14 @@ function CustomerDashboard() {
     return new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime();
   });
   
+  // Filter logs strictly on or after the customer's joining date
+  const userJoinDate = currentUser.createdAt ? currentUser.createdAt.split("T")[0] : null;
+
   // Deduplicate logs by date and tiffin, picking the latest modified one
   const userLogs = Object.values(sortedLogs.reduce((acc, log) => {
+    if (userJoinDate && log.date < userJoinDate) {
+      return acc;
+    }
     const key = `${log.date}-${log.tiffinId}`;
     if (!acc[key]) {
       acc[key] = log;

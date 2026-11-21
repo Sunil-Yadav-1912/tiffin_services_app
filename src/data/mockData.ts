@@ -21,6 +21,7 @@ export interface User {
   tiffinIds?: string[];
   advancePayment?: number;
   leaves?: { id: string; from: string; to: string }[];
+  createdAt?: string;
 }
 
 export type TiffinStatus = "Delivered" | "Cancelled" | "Pending";

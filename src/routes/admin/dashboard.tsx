@@ -460,6 +460,10 @@ function AdminDashboard() {
               <tbody className="divide-y divide-border/50">
                 {(() => {
                   const deliveryRows = customers.flatMap(cust => {
+                    const custJoinDate = cust.createdAt ? cust.createdAt.split("T")[0] : null;
+                    if (custJoinDate && dateStr < custJoinDate) {
+                      return [];
+                    }
                     const subscribedMessIds = (cust.tiffinIds || []).filter(tId => {
                       const t = tiffins.find(item => String(item.id) === String(tId));
                       return t ? (t.category === "Monthly" || Number(t.price) >= 500 || t.name.toLowerCase().includes("monthly") || t.name.toLowerCase().includes("combo") || t.name.toLowerCase().includes("plan")) : false;

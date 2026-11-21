@@ -112,6 +112,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         tiffinIds: u.tiffins ? u.tiffins.map((t: any) => String(t.id)) : (Array.isArray(u.tiffin_ids) ? u.tiffin_ids.map(String) : []),
         advancePayment: Number(u.advance_payment) || 0,
         leaves: u.leaves ? u.leaves.map((l: any) => ({ id: String(l.id), from: l.from_date, to: l.to_date })) : [],
+        createdAt: u.created_at,
         id: String(u.id)
       })));
     } catch (e) {
@@ -215,7 +216,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ...profileData,
           tiffinIds: profileData.tiffins ? profileData.tiffins.map((t: any) => String(t.id)) : (profileData.tiffin_ids ? profileData.tiffin_ids.map(String) : prev.tiffinIds),
           advancePayment: Number(profileData.advance_payment) || prev.advancePayment || 0,
-          leaves: leavesData.map((l: any) => ({ id: String(l.id), from: l.from_date, to: l.to_date }))
+          leaves: leavesData.map((l: any) => ({ id: String(l.id), from: l.from_date, to: l.to_date })),
+          createdAt: profileData.created_at || prev.createdAt
         };
       });
 
@@ -246,8 +248,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           name: u.name,
           email: u.email,
           role: u.role,
+          phone: u.phone,
+          address: u.address,
           tiffinIds: u.tiffins ? u.tiffins.map((t: any) => String(t.id)) : (Array.isArray(u.tiffin_ids) ? u.tiffin_ids.map(String) : []),
-          advancePayment: Number(u.advance_payment) || 0
+          advancePayment: Number(u.advance_payment) || 0,
+          createdAt: u.created_at
         });
         return true;
       }
@@ -311,7 +316,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         phone: u.phone || data.phone,
         address: u.address || data.address,
         tiffinIds: u.tiffins ? u.tiffins.map((t: any) => String(t.id)) : (Array.isArray(u.tiffin_ids) ? u.tiffin_ids.map(String) : selectedTiffinIds),
-        advancePayment: 0
+        advancePayment: 0,
+        createdAt: u.created_at || new Date().toISOString()
       };
       setCurrentUser(newUser);
       return true;
